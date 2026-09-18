@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mot-pa2"
+version = "0.1.0"
+description = "Identity-aware multi-object tracking for Deep Learning PA2"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24", "torch>=2.0", "matplotlib>=3.7", "pillow>=9.5"]
+
+[project.optional-dependencies]
+full = ["scipy>=1.10", "pandas>=2.0", "jupyter>=1.0", "opencv-python>=4.8"]
+
+test = ["pytest>=7.4"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.setuptools.packages.find]
+include = ["mot_pa2*"]
