@@ -1,0 +1,110 @@
+[
+  {
+    "sequence": "MOT17-09",
+    "density": 10.142857142857142,
+    "mAP": 0.4753647124863695,
+    "baseline": {
+      "IDF1": 0.5049203373945642,
+      "IDTP": 2155,
+      "IDFP": 1056,
+      "IDFN": 3170,
+      "IDSW": 38,
+      "fragmentations": 38,
+      "unique_count_error": 28,
+      "predicted_identities": 54,
+      "true_identities": 26
+    },
+    "temporal": {
+      "IDF1": 0.504742944138658,
+      "IDTP": 2155,
+      "IDFP": 1059,
+      "IDFN": 3170,
+      "IDSW": 39,
+      "fragmentations": 39,
+      "unique_count_error": 29,
+      "predicted_identities": 55,
+      "true_identities": 26
+    }
+  },
+  {
+    "sequence": "MOT17-10",
+    "density": 19.631498470948014,
+    "mAP": 0.38260121435417904,
+    "baseline": {
+      "IDF1": 0.37408542816268137,
+      "IDTP": 4576,
+      "IDFP": 7050,
+      "IDFN": 8263,
+      "IDSW": 492,
+      "fragmentations": 396,
+      "unique_count_error": 428,
+      "predicted_identities": 485,
+      "true_identities": 57
+    },
+    "temporal": {
+      "IDF1": 0.377022389279294,
+      "IDTP": 4614,
+      "IDFP": 7023,
+      "IDFN": 8225,
+      "IDSW": 495,
+      "fragmentations": 400,
+      "unique_count_error": 429,
+      "predicted_identities": 486,
+      "true_identities": 57
+    }
+  },
+  {
+    "sequence": "MOT17-11",
+    "density": 10.484444444444444,
+    "mAP": 0.502626358401734,
+    "baseline": {
+      "IDF1": 0.537335929159078,
+      "IDTP": 4278,
+      "IDFP": 2209,
+      "IDFN": 5158,
+      "IDSW": 77,
+      "fragmentations": 61,
+      "unique_count_error": 74,
+      "predicted_identities": 149,
+      "true_identities": 75
+    },
+    "temporal": {
+      "IDF1": 0.5395249465879101,
+      "IDTP": 4293,
+      "IDFP": 2185,
+      "IDFN": 5143,
+      "IDSW": 74,
+      "fragmentations": 60,
+      "unique_count_error": 74,
+      "predicted_identities": 149,
+      "true_identities": 75
+    }
+  },
+  {
+    "sequence": "MOT17-13",
+    "density": 15.522666666666666,
+    "mAP": 0.39174804376075656,
+    "baseline": {
+      "IDF1": 0.35336580274830404,
+      "IDTP": 4063,
+      "IDFP": 7291,
+      "IDFN": 7579,
+      "IDSW": 969,
+      "fragmentations": 482,
+      "unique_count_error": 623,
+      "predicted_identities": 733,
+      "true_identities": 110
+    },
+    "temporal": {
+      "IDF1": 0.3568479158516973,
+      "IDTP": 4105,
+      "IDFP": 7260,
+      "IDFN": 7537,
+      "IDSW": 959,
+      "fragmentations": 476,
+      "unique_count_error": 632,
+      "predicted_identities": 742,
+      "true_identities": 110
+    }
+  }
+]

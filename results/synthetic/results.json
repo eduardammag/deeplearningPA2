@@ -1,0 +1,58 @@
+[
+  {
+    "objects": 5,
+    "speed": 0.15,
+    "occlusion": 0,
+    "IDF1": 1.0,
+    "IDTP": 225,
+    "IDFP": 0,
+    "IDFN": 0,
+    "IDSW": 0,
+    "fragmentations": 0,
+    "unique_count_error": 0,
+    "predicted_identities": 5,
+    "true_identities": 5
+  },
+  {
+    "objects": 8,
+    "speed": 1.0,
+    "occlusion": 4,
+    "IDF1": 0.859481582537517,
+    "IDTP": 315,
+    "IDFP": 62,
+    "IDFN": 41,
+    "IDSW": 7,
+    "fragmentations": 0,
+    "unique_count_error": 7,
+    "predicted_identities": 15,
+    "true_identities": 8
+  },
+  {
+    "objects": 12,
+    "speed": 2.0,
+    "occlusion": 8,
+    "IDF1": 0.9124423963133641,
+    "IDTP": 495,
+    "IDFP": 58,
+    "IDFN": 37,
+    "IDSW": 7,
+    "fragmentations": 0,
+    "unique_count_error": 7,
+    "predicted_identities": 19,
+    "true_identities": 12
+  },
+  {
+    "objects": 15,
+    "speed": 4.0,
+    "occlusion": 16,
+    "IDF1": 0.2888311688311688,
+    "IDTP": 278,
+    "IDFP": 991,
+    "IDFN": 378,
+    "IDSW": 237,
+    "fragmentations": 0,
+    "unique_count_error": 193,
+    "predicted_identities": 208,
+    "true_identities": 15
+  }
+]

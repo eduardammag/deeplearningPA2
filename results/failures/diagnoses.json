@@ -1,0 +1,50 @@
+[
+  {
+    "frame": 173,
+    "gt_id": 1,
+    "track_id": 12,
+    "switch": true,
+    "fragment": true,
+    "previous_match_frame": 166,
+    "preceding_low_visibility_frames": 9,
+    "best_forecast_iou": 0.5895563106804498,
+    "visible_fraction": 0.015683,
+    "bptt_window": 16,
+    "gradient_decay_factor_at_8": 76.86336247584718,
+    "frames_without_spatial_match": 6,
+    "diagnosis": "The gap without spatial match exceeds track lifetime; test lifespan 16. GT visibility distinguishes detector misses from full occlusion.",
+    "figure": "case_1.png"
+  },
+  {
+    "frame": 189,
+    "gt_id": 1,
+    "track_id": 19,
+    "switch": true,
+    "fragment": true,
+    "previous_match_frame": 173,
+    "preceding_low_visibility_frames": 25,
+    "best_forecast_iou": 0.1152903313977624,
+    "visible_fraction": 0.23628,
+    "bptt_window": 16,
+    "gradient_decay_factor_at_8": 76.86336247584718,
+    "frames_without_spatial_match": 15,
+    "diagnosis": "The gap without spatial match exceeds track lifetime; test lifespan 16. GT visibility distinguishes detector misses from full occlusion.",
+    "figure": "case_2.png"
+  },
+  {
+    "frame": 211,
+    "gt_id": 29,
+    "track_id": 27,
+    "switch": true,
+    "fragment": true,
+    "previous_match_frame": 205,
+    "preceding_low_visibility_frames": 0,
+    "best_forecast_iou": 0.19510460730749665,
+    "visible_fraction": 0.48311,
+    "bptt_window": 16,
+    "gradient_decay_factor_at_8": 76.86336247584718,
+    "frames_without_spatial_match": 5,
+    "diagnosis": "The gap without spatial match exceeds track lifetime; test lifespan 16. GT visibility distinguishes detector misses from full occlusion.",
+    "figure": "case_3.png"
+  }
+]

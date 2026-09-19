@@ -1,0 +1,31 @@
+{
+  "hypothesis": "Long occlusion outlasts the 3-frame track lifetime; extend to 16.",
+  "sequence": "MOT17-05",
+  "results": [
+    {
+      "max_missed": 3,
+      "IDF1": 0.5432446714814162,
+      "IDTP": 3084,
+      "IDFP": 1353,
+      "IDFN": 3833,
+      "IDSW": 107,
+      "fragmentations": 88,
+      "unique_count_error": 42,
+      "predicted_identities": 175,
+      "true_identities": 133
+    },
+    {
+      "max_missed": 16,
+      "IDF1": 0.5081732580037664,
+      "IDTP": 3373,
+      "IDFP": 2985,
+      "IDFN": 3544,
+      "IDSW": 106,
+      "fragmentations": 76,
+      "unique_count_error": 5,
+      "predicted_identities": 138,
+      "true_identities": 133
+    }
+  ],
+  "conclusion": "Increasing lifetime changes IDF1 by -0.03507141347764975; a nonpositive change means longer survival alone does not solve association/prediction errors."
+}

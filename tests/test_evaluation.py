@@ -20,3 +20,10 @@ def test_exact_full_occlusion_and_easy_baseline():
     det=corrupt_detections(truth,0,0,0)
     metrics,_,_=evaluate_baseline(dict(enumerate(det)),dict(enumerate(truth)))
     assert metrics["IDF1"]>=.98
+
+def test_detector_variants_cannot_leak_across_splits():
+    import pytest
+    from mot_pa2.training import validate_split
+    validate_split()
+    with pytest.raises(ValueError):
+        validate_split(("MOT17-02-FRCNN",),("MOT17-02-SDP",),("MOT17-09",))

@@ -1,0 +1,33 @@
+{
+  "sequence": "MOT17-09",
+  "detectors": {
+    "public_FRCNN": {
+      "IDF1": 0.5049203373945642,
+      "IDTP": 2155,
+      "IDFP": 1056,
+      "IDFN": 3170,
+      "IDSW": 38,
+      "fragmentations": 38,
+      "unique_count_error": 28,
+      "predicted_identities": 54,
+      "true_identities": 26,
+      "mAP": 0.4753647124863695
+    },
+    "torchvision_COCO": {
+      "IDF1": 0.3191847234589888,
+      "IDTP": 1613,
+      "IDFP": 3169,
+      "IDFN": 3712,
+      "IDSW": 220,
+      "fragmentations": 175,
+      "unique_count_error": 171,
+      "predicted_identities": 197,
+      "true_identities": 26,
+      "mAP": 0.265667799982006
+    }
+  },
+  "torchvision_min_size": 320,
+  "torchvision_max_size": 640,
+  "score_threshold": 0.5,
+  "weights": "FasterRCNN_MobileNet_V3_Large_320_FPN_Weights.COCO_V1"
+}

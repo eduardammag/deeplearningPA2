@@ -35,3 +35,18 @@ Não são inventados resultados nem garantido ganho do modelo temporal.
 
 A dupla deve revisar as decisões, compreender as perdas, métricas e estado,
 e complementar este registro com as próprias intervenções e preparação da apresentação.
+
+## 2026-09-19 — Conclusão dos experimentos
+
+- As 36 combinações de célula, janela e seed foram treinadas sobre trajetórias
+  MOT17 reais. O cenário sintético fácil atingiu IDF1=1.
+- A configuração temporal principal apresentou ganhos pequenos em três das
+  quatro sequências reservadas e uma pequena queda na 09. A extensão da vida
+  das tracks de 3 para 16 piorou o IDF1 na validação, apesar de reduzir fragmentações.
+- Para a segunda fonte, foi adotado Faster R-CNN MobileNet V3 320 COCO,
+  congelado e com NMS próprio. A escolha prioriza execução em CPU; os caches
+  dos ensaios preliminares com ResNet não entram nos resultados finais.
+- Foi acrescentado teste contra vazamento de uma mesma cena entre splits
+  por uso de variantes diferentes de detector. A suíte completa passou 16 testes.
+- As notas da apresentação distinguem norma do gradiente, estado da LSTM,
+  sobrevivência imposta pela política de tracks e erros reais de associação.

@@ -39,6 +39,13 @@ class RemoteZip(io.RawIOBase):
 def download_images(sequence="MOT17-09-FRCNN",root="data_MOT17Labels/train"):
     destination=Path(root)/sequence/"img1"
     destination.mkdir(parents=True,exist_ok=True)
+    import configparser
+    info=configparser.ConfigParser()
+    info.read(destination.parent/"seqinfo.ini")
+    if "Sequence" in info:
+        expected=int(info["Sequence"]["seqLength"])
+        if all((destination/f"{frame:06d}.jpg").is_file() for frame in range(1,expected+1)):
+            return
     with zipfile.ZipFile(RemoteZip("https://motchallenge.net/data/MOT17.zip")) as archive:
         entries=[m for m in archive.infolist() if f"train/{sequence}/img1/" in m.filename and m.filename.endswith(".jpg")]
         if not entries: raise RuntimeError("Image directory not found in official archive")

@@ -26,6 +26,8 @@ def publish():
     files=list(Path("src").glob("*.py"))+[Path("metrics.py"),Path("train.py"),Path("pyproject.toml"),Path("checkpoints/gru.pt")]
     files+=list(Path("data_MOT17Labels/train").glob("*-FRCNN/gt/gt.txt"))
     files+=list(Path("data_MOT17Labels/train").glob("*-FRCNN/det/det.txt"))
+    files+=list(Path("data_MOT17Labels/train/MOT17-09-FRCNN/img1").glob("*.jpg"))
+    files+=list(Path(".cache/torch/checkpoints").glob("fasterrcnn_mobilenet_v3_large_320_fpn-*.pth"))
     hashes={str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
     save_metrics(dict(python=platform.python_version(),torch=str(torch.__version__),device="cpu",
         hashes=hashes,required_artifacts=required),Path("results/manifest.json"))
@@ -42,6 +44,34 @@ def publish():
     for name,values in ablation["summary"].items():
         score=values["IDF1"]
         lines.append(f"| {name} | {score['mean']:.4f} ± {score['std']:.4f} |")
+    memory=json.loads(Path("outputs/memory/results.json").read_text())
+    lines += ["", "## Horizonte de memória", "",
+              "| Célula | Redução da norma em 8 passos | Redução em 16 passos |",
+              "|---|---:|---:|"]
+    for cell,curve in memory["gradient"].items():
+        if cell == "final": continue
+        lines.append(f"| {cell} | {curve[0]/max(curve[8],1e-20):.1f}× | {curve[0]/max(curve[16],1e-20):.1f}× |")
+    horizons=memory["empirical_horizons"]
+    lines += ["",f"Nas {len(horizons)} trajetórias isoladas, o maior intervalo recuperado variou "
+              f"de {min(horizons)} a {max(horizons)} quadros. A política mata tracks depois de três "
+              "ausências; esse limite domina o horizonte empírico desta configuração.",
+              "", "A ablação não mostrou uma quebra clara da RNN em IDF1 ao aumentar T. "
+              "O gradiente se atenua fortemente em todas as células neste treino. Portas não garantem "
+              "memória longa automaticamente. Na LSTM, a curva mede h, não o caminho independente de c."]
+    stress=json.loads(Path("outputs/stress.json").read_text())
+    lines += ["", "## Estresse sem retreino", "",
+              "| Intensidade | mAP | Baseline IDF1 | Temporal IDF1 |",
+              "|---|---:|---:|---:|"]
+    for row in stress:
+        lines.append(f"| {row['level']} | {row['mAP']:.4f} | {row['baseline']['IDF1']:.4f} | {row['temporal']['IDF1']:.4f} |")
+    lines += ["", "As diferenças entre temporal e baseline são pequenas neste experimento: "
+              "não há evidência de absorção relevante da degradação do detector. "
+              "A perda de detecções e o ruído fragmentam ambas as soluções."]
+    detectors=json.loads(Path("outputs/detector_comparison.json").read_text())
+    lines += ["", "## Duas fontes de detecção, sequência 09 inteira", "",
+              "| Fonte | mAP | IDF1 | ID switches |", "|---|---:|---:|---:|"]
+    for name,row in detectors["detectors"].items():
+        lines.append(f"| {name} | {row['mAP']:.4f} | {row['IDF1']:.4f} | {row['IDSW']} |")
     lines+=["","## Interpretação","",
         "A previsão geométrica recorrente não garante ganho: examine os valores acima. "
         "O treinamento por teacher forcing e a perda de caixa não otimizam diretamente identidade. "

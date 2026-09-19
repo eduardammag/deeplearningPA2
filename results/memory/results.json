@@ -1,0 +1,1055 @@
+{
+  "gradient": {
+    "rnn": [
+      0.0005326194577719434,
+      0.000292668910105931,
+      0.00017261095968024165,
+      9.389826510641797e-05,
+      5.597795561129715e-05,
+      3.204421534519497e-05,
+      1.756356832771644e-05,
+      1.0150370826522703e-05,
+      5.87203814106374e-06,
+      3.5599844387945723e-06,
+      1.9600806915320845e-06,
+      1.084052051236739e-06,
+      6.354023041055257e-07,
+      3.7445588330076163e-07,
+      2.288320293253321e-07,
+      1.2795816006772043e-07,
+      7.511582411634521e-08,
+      4.67143307369966e-08,
+      2.808862993586292e-08,
+      1.5928604463200102e-08,
+      9.198024175649522e-09,
+      5.634233558871049e-09,
+      3.4363117525082476e-09,
+      1.9903824326553132e-09,
+      1.2105825942382298e-09,
+      7.253437247535521e-10,
+      4.344989173142577e-10,
+      2.4812030750311076e-10,
+      1.478182348117578e-10,
+      8.737864744907606e-11,
+      5.2858180397789833e-11,
+      3.086132231385798e-11
+    ],
+    "lstm": [
+      0.0006053537226762273,
+      8.327869704771729e-05,
+      3.671227162271862e-05,
+      1.745210218473403e-05,
+      8.759776683575637e-06,
+      4.568062831111774e-06,
+      2.4556451183599393e-06,
+      1.3599595733992942e-06,
+      7.764928824371964e-07,
+      4.560503277240002e-07,
+      2.738968567506106e-07,
+      1.6695883908734999e-07,
+      1.0259651794797264e-07,
+      6.32391434218782e-08,
+      3.8978409666601266e-08,
+      2.398530034308788e-08,
+      1.4726558000832668e-08,
+      9.022510301381903e-09,
+      5.518285259298317e-09,
+      3.371256190876082e-09,
+      2.0585476274981307e-09,
+      1.2571237627267973e-09,
+      7.681680664825552e-10,
+      4.698620516101204e-10,
+      2.8776394266592786e-10,
+      1.7649549660311847e-10,
+      1.0841750424945423e-10,
+      6.670381814174314e-11,
+      4.110567601903724e-11,
+      2.5375240361095834e-11,
+      1.5698734209834177e-11,
+      9.745535907673512e-12
+    ],
+    "gru": [
+      0.0007036586898720998,
+      0.0003702463197896577,
+      0.00020527174297058082,
+      0.00011750192834369955,
+      6.871272699982e-05,
+      4.082098237745413e-05,
+      2.455667495837588e-05,
+      1.492713039397131e-05,
+      9.154669626809664e-06,
+      5.657660370417261e-06,
+      3.519497953519135e-06,
+      2.2014858735985854e-06,
+      1.383278145361544e-06,
+      8.722897231194793e-07,
+      5.515912078202234e-07,
+      3.495318467994224e-07,
+      2.2184038916961413e-07,
+      1.4096924372264397e-07,
+      8.966962961043379e-08,
+      5.709169695333749e-08,
+      3.6385292084828436e-08,
+      2.3214469041521468e-08,
+      1.4830603280169274e-08,
+      9.488990489192606e-09,
+      6.081733523038979e-09,
+      3.905167040435531e-09,
+      2.512344183386306e-09,
+      1.6192911031151502e-09,
+      1.0454533870551952e-09,
+      6.759143531334666e-10,
+      4.3740631385999484e-10,
+      2.8312594250404916e-10
+    ],
+    "final": [
+      0.0007036586898720998,
+      0.0003702463197896577,
+      0.00020527174297058082,
+      0.00011750192834369955,
+      6.871272699982e-05,
+      4.082098237745413e-05,
+      2.455667495837588e-05,
+      1.492713039397131e-05,
+      9.154669626809664e-06,
+      5.657660370417261e-06,
+      3.519497953519135e-06,
+      2.2014858735985854e-06,
+      1.383278145361544e-06,
+      8.722897231194793e-07,
+      5.515912078202234e-07,
+      3.495318467994224e-07,
+      2.2184038916961413e-07,
+      1.4096924372264397e-07,
+      8.966962961043379e-08,
+      5.709169695333749e-08,
+      3.6385292084828436e-08,
+      2.3214469041521468e-08,
+      1.4830603280169274e-08,
+      9.488990489192606e-09,
+      6.081733523038979e-09,
+      3.905167040435531e-09,
+      2.512344183386306e-09,
+      1.6192911031151502e-09,
+      1.0454533870551952e-09,
+      6.759143531334666e-10,
+      4.3740631385999484e-10,
+      2.8312594250404916e-10
+    ]
+  },
+  "trials": [
+    {
+      "trajectory": 0,
+      "gap": 1,
+      "survived": true
+    },
+    {
+      "trajectory": 0,
+      "gap": 2,
+      "survived": true
+    },
+    {
+      "trajectory": 0,
+      "gap": 3,
+      "survived": true
+    },
+    {
+      "trajectory": 0,
+      "gap": 4,
+      "survived": false
+    },
+    {
+      "trajectory": 0,
+      "gap": 8,
+      "survived": false
+    },
+    {
+      "trajectory": 0,
+      "gap": 16,
+      "survived": false
+    },
+    {
+      "trajectory": 0,
+      "gap": 24,
+      "survived": false
+    },
+    {
+      "trajectory": 1,
+      "gap": 1,
+      "survived": true
+    },
+    {
+      "trajectory": 1,
+      "gap": 2,
+      "survived": true
+    },
+    {
+      "trajectory": 1,
+      "gap": 3,
+      "survived": true
+    },
+    {
+      "trajectory": 1,
+      "gap": 4,
+      "survived": false
+    },
+    {
+      "trajectory": 1,
+      "gap": 8,
+      "survived": false
+    },
+    {
+      "trajectory": 1,
+      "gap": 16,
+      "survived": false
+    },
+    {
+      "trajectory": 1,
+      "gap": 24,
+      "survived": false
+    },
+    {
+      "trajectory": 2,
+      "gap": 1,
+      "survived": true
+    },
+    {
+      "trajectory": 2,
+      "gap": 2,
+      "survived": true
+    },
+    {
+      "trajectory": 2,
+      "gap": 3,
+      "survived": true
+    },
+    {
+      "trajectory": 2,
+      "gap": 4,
+      "survived": false
+    },
+    {
+      "trajectory": 2,
+      "gap": 8,
+      "survived": false
+    },
+    {
+      "trajectory": 2,
+      "gap": 16,
+      "survived": false
+    },
+    {
+      "trajectory": 2,
+      "gap": 24,
+      "survived": false
+    },
+    {
+      "trajectory": 3,
+      "gap": 1,
+      "survived": true
+    },
+    {
+      "trajectory": 3,
+      "gap": 2,
+      "survived": true
+    },
+    {
+      "trajectory": 3,
+      "gap": 3,
+      "survived": true
+    },
+    {
+      "trajectory": 3,
+      "gap": 4,
+      "survived": false
+    },
+    {
+      "trajectory": 3,
+      "gap": 8,
+      "survived": false
+    },
+    {
+      "trajectory": 3,
+      "gap": 16,
+      "survived": false
+    },
+    {
+      "trajectory": 3,
+      "gap": 24,
+      "survived": false
+    },
+    {
+      "trajectory": 4,
+      "gap": 1,
+      "survived": true
+    },
+    {
+      "trajectory": 4,
+      "gap": 2,
+      "survived": true
+    },
+    {
+      "trajectory": 4,
+      "gap": 3,
+      "survived": true
+    },
+    {
+      "trajectory": 4,
+      "gap": 4,
+      "survived": false
+    },
+    {
+      "trajectory": 4,
+      "gap": 8,
+      "survived": false
+    },
+    {
+      "trajectory": 4,
+      "gap": 16,
+      "survived": false
+    },
+    {
+      "trajectory": 4,
+      "gap": 24,
+      "survived": false
+    },
+    {
+      "trajectory": 5,
+      "gap": 1,
+      "survived": true
+    },
+    {
+      "trajectory": 5,
+      "gap": 2,
+      "survived": true
+    },
+    {
+      "trajectory": 5,
+      "gap": 3,
+      "survived": true
+    },
+    {
+      "trajectory": 5,
+      "gap": 4,
+      "survived": false
+    },
+    {
+      "trajectory": 5,
+      "gap": 8,
+      "survived": false
+    },
+    {
+      "trajectory": 5,
+      "gap": 16,
+      "survived": false
+    },
+    {
+      "trajectory": 5,
+      "gap": 24,
+      "survived": false
+    },
+    {
+      "trajectory": 6,
+      "gap": 1,
+      "survived": true
+    },
+    {
+      "trajectory": 6,
+      "gap": 2,
+      "survived": true
+    },
+    {
+      "trajectory": 6,
+      "gap": 3,
+      "survived": true
+    },
+    {
+      "trajectory": 6,
+      "gap": 4,
+      "survived": false
+    },
+    {
+      "trajectory": 6,
+      "gap": 8,
+      "survived": false
+    },
+    {
+      "trajectory": 6,
+      "gap": 16,
+      "survived": false
+    },
+    {
+      "trajectory": 6,
+      "gap": 24,
+      "survived": false
+    },
+    {
+      "trajectory": 7,
+      "gap": 1,
+      "survived": true
+    },
+    {
+      "trajectory": 7,
+      "gap": 2,
+      "survived": true
+    },
+    {
+      "trajectory": 7,
+      "gap": 3,
+      "survived": true
+    },
+    {
+      "trajectory": 7,
+      "gap": 4,
+      "survived": false
+    },
+    {
+      "trajectory": 7,
+      "gap": 8,
+      "survived": false
+    },
+    {
+      "trajectory": 7,
+      "gap": 16,
+      "survived": false
+    },
+    {
+      "trajectory": 7,
+      "gap": 24,
+      "survived": false
+    },
+    {
+      "trajectory": 8,
+      "gap": 1,
+      "survived": true
+    },
+    {
+      "trajectory": 8,
+      "gap": 2,
+      "survived": true
+    },
+    {
+      "trajectory": 8,
+      "gap": 3,
+      "survived": true
+    },
+    {
+      "trajectory": 8,
+      "gap": 4,
+      "survived": false
+    },
+    {
+      "trajectory": 8,
+      "gap": 8,
+      "survived": false
+    },
+    {
+      "trajectory": 8,
+      "gap": 16,
+      "survived": false
+    },
+    {
+      "trajectory": 8,
+      "gap": 24,
+      "survived": false
+    },
+    {
+      "trajectory": 9,
+      "gap": 1,
+      "survived": true
+    },
+    {
+      "trajectory": 9,
+      "gap": 2,
+      "survived": true
+    },
+    {
+      "trajectory": 9,
+      "gap": 3,
+      "survived": true
+    },
+    {
+      "trajectory": 9,
+      "gap": 4,
+      "survived": false
+    },
+    {
+      "trajectory": 9,
+      "gap": 8,
+      "survived": false
+    },
+    {
+      "trajectory": 9,
+      "gap": 16,
+      "survived": false
+    },
+    {
+      "trajectory": 9,
+      "gap": 24,
+      "survived": false
+    },
+    {
+      "trajectory": 10,
+      "gap": 1,
+      "survived": true
+    },
+    {
+      "trajectory": 10,
+      "gap": 2,
+      "survived": true
+    },
+    {
+      "trajectory": 10,
+      "gap": 3,
+      "survived": true
+    },
+    {
+      "trajectory": 10,
+      "gap": 4,
+      "survived": false
+    },
+    {
+      "trajectory": 10,
+      "gap": 8,
+      "survived": false
+    },
+    {
+      "trajectory": 10,
+      "gap": 16,
+      "survived": false
+    },
+    {
+      "trajectory": 10,
+      "gap": 24,
+      "survived": false
+    },
+    {
+      "trajectory": 11,
+      "gap": 1,
+      "survived": true
+    },
+    {
+      "trajectory": 11,
+      "gap": 2,
+      "survived": true
+    },
+    {
+      "trajectory": 11,
+      "gap": 3,
+      "survived": true
+    },
+    {
+      "trajectory": 11,
+      "gap": 4,
+      "survived": false
+    },
+    {
+      "trajectory": 11,
+      "gap": 8,
+      "survived": false
+    },
+    {
+      "trajectory": 11,
+      "gap": 16,
+      "survived": false
+    },
+    {
+      "trajectory": 11,
+      "gap": 24,
+      "survived": false
+    },
+    {
+      "trajectory": 12,
+      "gap": 1,
+      "survived": true
+    },
+    {
+      "trajectory": 12,
+      "gap": 2,
+      "survived": true
+    },
+    {
+      "trajectory": 12,
+      "gap": 3,
+      "survived": true
+    },
+    {
+      "trajectory": 12,
+      "gap": 4,
+      "survived": false
+    },
+    {
+      "trajectory": 12,
+      "gap": 8,
+      "survived": false
+    },
+    {
+      "trajectory": 12,
+      "gap": 16,
+      "survived": false
+    },
+    {
+      "trajectory": 12,
+      "gap": 24,
+      "survived": false
+    },
+    {
+      "trajectory": 13,
+      "gap": 1,
+      "survived": true
+    },
+    {
+      "trajectory": 13,
+      "gap": 2,
+      "survived": true
+    },
+    {
+      "trajectory": 13,
+      "gap": 3,
+      "survived": true
+    },
+    {
+      "trajectory": 13,
+      "gap": 4,
+      "survived": false
+    },
+    {
+      "trajectory": 13,
+      "gap": 8,
+      "survived": false
+    },
+    {
+      "trajectory": 13,
+      "gap": 16,
+      "survived": false
+    },
+    {
+      "trajectory": 13,
+      "gap": 24,
+      "survived": false
+    },
+    {
+      "trajectory": 14,
+      "gap": 1,
+      "survived": true
+    },
+    {
+      "trajectory": 14,
+      "gap": 2,
+      "survived": true
+    },
+    {
+      "trajectory": 14,
+      "gap": 3,
+      "survived": true
+    },
+    {
+      "trajectory": 14,
+      "gap": 4,
+      "survived": false
+    },
+    {
+      "trajectory": 14,
+      "gap": 8,
+      "survived": false
+    },
+    {
+      "trajectory": 14,
+      "gap": 16,
+      "survived": false
+    },
+    {
+      "trajectory": 14,
+      "gap": 24,
+      "survived": false
+    },
+    {
+      "trajectory": 15,
+      "gap": 1,
+      "survived": true
+    },
+    {
+      "trajectory": 15,
+      "gap": 2,
+      "survived": true
+    },
+    {
+      "trajectory": 15,
+      "gap": 3,
+      "survived": true
+    },
+    {
+      "trajectory": 15,
+      "gap": 4,
+      "survived": false
+    },
+    {
+      "trajectory": 15,
+      "gap": 8,
+      "survived": false
+    },
+    {
+      "trajectory": 15,
+      "gap": 16,
+      "survived": false
+    },
+    {
+      "trajectory": 15,
+      "gap": 24,
+      "survived": false
+    },
+    {
+      "trajectory": 16,
+      "gap": 1,
+      "survived": true
+    },
+    {
+      "trajectory": 16,
+      "gap": 2,
+      "survived": true
+    },
+    {
+      "trajectory": 16,
+      "gap": 3,
+      "survived": true
+    },
+    {
+      "trajectory": 16,
+      "gap": 4,
+      "survived": false
+    },
+    {
+      "trajectory": 16,
+      "gap": 8,
+      "survived": false
+    },
+    {
+      "trajectory": 16,
+      "gap": 16,
+      "survived": false
+    },
+    {
+      "trajectory": 16,
+      "gap": 24,
+      "survived": false
+    },
+    {
+      "trajectory": 17,
+      "gap": 1,
+      "survived": true
+    },
+    {
+      "trajectory": 17,
+      "gap": 2,
+      "survived": true
+    },
+    {
+      "trajectory": 17,
+      "gap": 3,
+      "survived": true
+    },
+    {
+      "trajectory": 17,
+      "gap": 4,
+      "survived": false
+    },
+    {
+      "trajectory": 17,
+      "gap": 8,
+      "survived": false
+    },
+    {
+      "trajectory": 17,
+      "gap": 16,
+      "survived": false
+    },
+    {
+      "trajectory": 17,
+      "gap": 24,
+      "survived": false
+    },
+    {
+      "trajectory": 18,
+      "gap": 1,
+      "survived": true
+    },
+    {
+      "trajectory": 18,
+      "gap": 2,
+      "survived": true
+    },
+    {
+      "trajectory": 18,
+      "gap": 3,
+      "survived": true
+    },
+    {
+      "trajectory": 18,
+      "gap": 4,
+      "survived": false
+    },
+    {
+      "trajectory": 18,
+      "gap": 8,
+      "survived": false
+    },
+    {
+      "trajectory": 18,
+      "gap": 16,
+      "survived": false
+    },
+    {
+      "trajectory": 18,
+      "gap": 24,
+      "survived": false
+    },
+    {
+      "trajectory": 19,
+      "gap": 1,
+      "survived": true
+    },
+    {
+      "trajectory": 19,
+      "gap": 2,
+      "survived": true
+    },
+    {
+      "trajectory": 19,
+      "gap": 3,
+      "survived": true
+    },
+    {
+      "trajectory": 19,
+      "gap": 4,
+      "survived": false
+    },
+    {
+      "trajectory": 19,
+      "gap": 8,
+      "survived": false
+    },
+    {
+      "trajectory": 19,
+      "gap": 16,
+      "survived": false
+    },
+    {
+      "trajectory": 19,
+      "gap": 24,
+      "survived": false
+    },
+    {
+      "trajectory": 20,
+      "gap": 1,
+      "survived": true
+    },
+    {
+      "trajectory": 20,
+      "gap": 2,
+      "survived": true
+    },
+    {
+      "trajectory": 20,
+      "gap": 3,
+      "survived": true
+    },
+    {
+      "trajectory": 20,
+      "gap": 4,
+      "survived": false
+    },
+    {
+      "trajectory": 20,
+      "gap": 8,
+      "survived": false
+    },
+    {
+      "trajectory": 20,
+      "gap": 16,
+      "survived": false
+    },
+    {
+      "trajectory": 20,
+      "gap": 24,
+      "survived": false
+    },
+    {
+      "trajectory": 21,
+      "gap": 1,
+      "survived": true
+    },
+    {
+      "trajectory": 21,
+      "gap": 2,
+      "survived": true
+    },
+    {
+      "trajectory": 21,
+      "gap": 3,
+      "survived": true
+    },
+    {
+      "trajectory": 21,
+      "gap": 4,
+      "survived": false
+    },
+    {
+      "trajectory": 21,
+      "gap": 8,
+      "survived": false
+    },
+    {
+      "trajectory": 21,
+      "gap": 16,
+      "survived": false
+    },
+    {
+      "trajectory": 21,
+      "gap": 24,
+      "survived": false
+    },
+    {
+      "trajectory": 22,
+      "gap": 1,
+      "survived": true
+    },
+    {
+      "trajectory": 22,
+      "gap": 2,
+      "survived": true
+    },
+    {
+      "trajectory": 22,
+      "gap": 3,
+      "survived": true
+    },
+    {
+      "trajectory": 22,
+      "gap": 4,
+      "survived": false
+    },
+    {
+      "trajectory": 22,
+      "gap": 8,
+      "survived": false
+    },
+    {
+      "trajectory": 22,
+      "gap": 16,
+      "survived": false
+    },
+    {
+      "trajectory": 22,
+      "gap": 24,
+      "survived": false
+    },
+    {
+      "trajectory": 23,
+      "gap": 1,
+      "survived": true
+    },
+    {
+      "trajectory": 23,
+      "gap": 2,
+      "survived": true
+    },
+    {
+      "trajectory": 23,
+      "gap": 3,
+      "survived": true
+    },
+    {
+      "trajectory": 23,
+      "gap": 4,
+      "survived": false
+    },
+    {
+      "trajectory": 23,
+      "gap": 8,
+      "survived": false
+    },
+    {
+      "trajectory": 23,
+      "gap": 16,
+      "survived": false
+    },
+    {
+      "trajectory": 23,
+      "gap": 24,
+      "survived": false
+    }
+  ],
+  "empirical_horizons": [
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3
+  ],
+  "dataset_occlusions": [
+    25,
+    25,
+    14,
+    45,
+    12,
+    6,
+    8,
+    22,
+    11,
+    12,
+    1,
+    4,
+    114,
+    26,
+    8,
+    1,
+    12,
+    13,
+    11,
+    67,
+    11,
+    35,
+    28,
+    5,
+    18,
+    9,
+    15,
+    2,
+    12,
+    4,
+    6,
+    1,
+    60,
+    38,
+    8,
+    66,
+    64,
+    33,
+    12,
+    6,
+    7,
+    54,
+    1
+  ],
+  "visibility_threshold": 0.2,
+  "max_missed": 3
+}

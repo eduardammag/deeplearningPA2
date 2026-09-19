@@ -36,8 +36,17 @@ def generate_video(config):
         raw=centers-margin+velocity*f
         positions=margin+extent-np.abs(raw%(2*extent)-extent)
         start=max(1,config.frames//2-config.occlusion_duration//2)
-        if config.objects>=2 and start<=f<start+config.occlusion_duration:
-            positions[1]=positions[0]
+        if config.objects>=2 and config.occlusion_duration:
+            # Continuous approach, an exact dwell interval, then separation.
+            transition=6
+            if start-transition<=f<start:
+                weight=(f-(start-transition))/transition
+                positions[1]=(1-weight)*positions[1]+weight*positions[0]
+            elif start<=f<start+config.occlusion_duration:
+                positions[1]=positions[0]
+            elif start+config.occlusion_duration<=f<start+config.occlusion_duration+transition:
+                weight=1-(f-(start+config.occlusion_duration)+1)/transition
+                positions[1]=(1-weight)*positions[1]+weight*positions[0]
         image=Image.new("RGB",(config.width,config.height),(18,18,24))
         labels=Image.new("I",image.size,0)
         boxes={}

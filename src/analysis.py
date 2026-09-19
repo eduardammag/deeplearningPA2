@@ -79,6 +79,8 @@ def baseline_suite(model):
     return rows
 
 def ablation_cells():
+    from .training import validate_split
+    validate_split()
     train=trajectory_chunks([resolve_sequence(DATA_ROOT,s) for s in TRAIN])
     validation=trajectory_chunks([resolve_sequence(DATA_ROOT,s) for s in VALIDATION])
     root=resolve_sequence(DATA_ROOT,VALIDATION[0])
@@ -169,8 +171,12 @@ def memory_suite(model,root):
     gaps=sorted({t["gap"] for t in trials})
     axes[0].plot(gaps,[np.mean([t["survived"] for t in trials if t["gap"]==g]) for g in gaps],"o-")
     axes[0].set(xlabel="Injected occlusion (frames)",ylabel="Same-ID survival")
-    axes[1].hist([horizons,durations],bins=[0,1,2,4,8,16,32,64,128,512],label=["empirical state horizon","dataset occlusions"])
-    axes[1].set(xlabel="Frames",ylabel="Count"); axes[1].legend()
+    for values,label in ((horizons,"empirical state horizon"),(durations,"dataset occlusions")):
+        if values:
+            ordered=np.sort(values)
+            axes[1].step(np.r_[0,ordered],np.r_[0,np.arange(1,len(values)+1)/len(values)],where="post",label=label)
+    axes[1].set_xscale("symlog",linthresh=1)
+    axes[1].set(xlabel="Frames (log scale above 1)",ylabel="Cumulative fraction",ylim=(0,1.05)); axes[1].legend()
     finish(fig,OUT/"memory/empirical.png")
 
 def correction_suite(model):
