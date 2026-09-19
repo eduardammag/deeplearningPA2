@@ -8,6 +8,7 @@ class Detection:
     bbox: tuple[float, float, float, float]
     score: float = 1.0
     gt_id: Optional[int] = None
+    visibility: float = 1.0
 
 @dataclass
 class Track:

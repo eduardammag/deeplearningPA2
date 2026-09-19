@@ -14,12 +14,20 @@ def iou(first, second) -> float:
 
 
 def nms(boxes, scores, threshold=0.5):
-    order = sorted(range(len(boxes)), key=lambda index: scores[index], reverse=True)
+    boxes = np.asarray(boxes, dtype=float).reshape(-1, 4)
+    order = np.argsort(-np.asarray(scores), kind="stable")
+    areas = np.maximum(0, boxes[:, 2] - boxes[:, 0]) * np.maximum(0, boxes[:, 3] - boxes[:, 1])
     keep = []
-    while order:
-        current = order.pop(0)
+    while len(order):
+        current = int(order[0])
         keep.append(current)
-        order = [index for index in order if iou(boxes[current], boxes[index]) < threshold]
+        rest = order[1:]
+        sizes = np.maximum(0, np.minimum(boxes[current, 2:], boxes[rest, 2:]) -
+                           np.maximum(boxes[current, :2], boxes[rest, :2]))
+        intersection = sizes[:, 0] * sizes[:, 1]
+        union = areas[current] + areas[rest] - intersection
+        overlap = np.divide(intersection, union, out=np.zeros_like(union), where=union > 0)
+        order = rest[overlap < threshold]
     return keep
 
 

@@ -4,5 +4,8 @@ __pycache__/
 .venv/
 data_MOT17Labels/
 outputs/
-checkpoints/
+checkpoints/*
+!checkpoints/gru.pt
+.cache/
+*.log
 .ipynb_checkpoints/

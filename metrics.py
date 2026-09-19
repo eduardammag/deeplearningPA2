@@ -1,105 +1,94 @@
-"""Métricas de tracking implementadas para o PA2.
+﻿"""Spatial tracking metrics, global identity assignment and explicit events."""
+from collections.abc import Mapping
+import numpy as np
+from scipy.optimize import linear_sum_assignment
 
-As funções aceitam frames como iteráveis de objetos com `track_id`, `gt_id`
-e uma caixa `xyxy`, mantendo a API pequena e independente do restante do repo.
-"""
-from collections import defaultdict
-from typing import Iterable, Mapping, Sequence
+def frame_map(records):
+    return dict(records) if isinstance(records, Mapping) else dict(enumerate(records))
 
+def overlap(a,b):
+    inter=max(0,min(a[2],b[2])-max(a[0],b[0]))*max(0,min(a[3],b[3])-max(a[1],b[1]))
+    union=max(0,a[2]-a[0])*max(0,a[3]-a[1])+max(0,b[2]-b[0])*max(0,b[3]-b[1])-inter
+    return inter/union if union else 0.
 
-def _frames(records: Iterable[Mapping]) -> list[list[Mapping]]:
-    if isinstance(records, Mapping):
-        return [list(records[key]) for key in sorted(records)]
-    return [list(frame) for frame in records]
+def spatial_matches(pred, truth, threshold=.5):
+    if not pred or not truth: return []
+    scores=np.array([[overlap(p["bbox"],g["bbox"]) for g in truth] for p in pred])
+    weights=np.where(scores>=threshold,min(len(pred),len(truth))+1+scores,0)
+    rows,cols=linear_sum_assignment(weights,maximize=True)
+    return [(int(p),int(g)) for p,g in zip(rows,cols) if scores[p,g]>=threshold]
 
+def identity_events(predictions, ground_truth, threshold=.5):
+    pred,truth=frame_map(predictions),frame_map(ground_truth)
+    last_id,ever,interrupted={},set(),set()
+    events=[]
+    for frame in sorted(set(pred)|set(truth)):
+        ps,gs=pred.get(frame,[]),truth.get(frame,[])
+        matched={g:p for p,g in spatial_matches(ps,gs,threshold)}
+        for gi,gt in enumerate(gs):
+            identity=gt["gt_id"]
+            if gi not in matched:
+                if identity in ever: interrupted.add(identity)
+                continue
+            track=ps[matched[gi]]["track_id"]
+            events.append(dict(frame=frame,gt_id=identity,track_id=track,
+                switch=identity in last_id and last_id[identity]!=track,fragment=identity in interrupted))
+            last_id[identity]=track
+            ever.add(identity)
+            interrupted.discard(identity)
+    return events
 
-def _counts(predictions, ground_truth):
-    pred_frames, gt_frames = _frames(predictions), _frames(ground_truth)
-    pred_ids = sorted({item["track_id"] for frame in pred_frames for item in frame})
-    gt_ids = sorted({item["gt_id"] for frame in gt_frames for item in frame})
-    matrix = {(pred_id, gt_id): 0 for pred_id in pred_ids for gt_id in gt_ids}
-    gt_total = sum(len(frame) for frame in gt_frames)
-    pred_total = sum(len(frame) for frame in pred_frames)
-    for pred_frame, gt_frame in zip(pred_frames, gt_frames):
-        for pred in pred_frame:
-            for gt in gt_frame:
-                if pred.get("gt_id") == gt.get("gt_id"):
-                    matrix[(pred["track_id"], gt["gt_id"])] += 1
-    matches = _maximum_weight_matching(pred_ids, gt_ids, matrix)
-    idtp = sum(matrix[pair] for pair in matches)
-    return idtp, pred_total, gt_total, pred_frames, gt_frames
+def evaluate_tracking(predictions,ground_truth,threshold=.5):
+    pred,truth=frame_map(predictions),frame_map(ground_truth)
+    pids=sorted({p["track_id"] for ps in pred.values() for p in ps})
+    gids=sorted({g["gt_id"] for gs in truth.values() for g in gs})
+    pi,gi={x:i for i,x in enumerate(pids)},{x:i for i,x in enumerate(gids)}
+    weights=np.zeros((len(pids),len(gids)),dtype=np.int64)
+    for frame in sorted(set(pred)|set(truth)):
+        ps,gs=pred.get(frame,[]),truth.get(frame,[])
+        if len({p["track_id"] for p in ps})!=len(ps): raise ValueError("Duplicate predicted ID")
+        if len({g["gt_id"] for g in gs})!=len(gs): raise ValueError("Duplicate true ID")
+        for p in ps:
+            for g in gs:
+                if overlap(p["bbox"],g["bbox"])>=threshold:
+                    weights[pi[p["track_id"]],gi[g["gt_id"]]]+=1
+    rows,cols=linear_sum_assignment(weights,maximize=True)
+    tp=int(weights[rows,cols].sum())
+    npred,ngt=sum(map(len,pred.values())),sum(map(len,truth.values()))
+    events=identity_events(pred,truth,threshold)
+    return dict(IDF1=2*tp/(npred+ngt) if npred+ngt else 1.,IDTP=tp,IDFP=npred-tp,IDFN=ngt-tp,
+        IDSW=sum(e["switch"] for e in events),fragmentations=sum(e["fragment"] for e in events),
+        unique_count_error=len(pids)-len(gids),predicted_identities=len(pids),true_identities=len(gids))
 
+def idf1(predictions,ground_truth):
+    return evaluate_tracking(predictions,ground_truth)["IDF1"]
 
-def _maximum_weight_matching(rows: Sequence, cols: Sequence, weights: dict) -> list[tuple]:
-    """Maximum one-to-one assignment; dynamic programming is exact for MOT IDs."""
-    if not rows or not cols:
-        return []
-    if len(cols) > 20:
-        # A deterministic greedy fallback avoids exponential memory on large sets.
-        available = set(cols)
-        result = []
-        for row in rows:
-            candidates = sorted(((weights[(row, col)], col) for col in available), reverse=True)
-            if candidates and candidates[0][0] > 0:
-                result.append((row, candidates[0][1]))
-                available.remove(candidates[0][1])
-        return result
-    best_value, best_pairs = 0, []
-    def visit(index, available, value, pairs):
-        nonlocal best_value, best_pairs
-        if index == len(rows):
-            if value > best_value:
-                best_value, best_pairs = value, pairs.copy()
-            return
-        visit(index + 1, available, value, pairs)
-        row = rows[index]
-        for col in available:
-            weight = weights[(row, col)]
-            if weight:
-                visit(index + 1, available - {col}, value + weight, pairs + [(row, col)])
-    visit(0, set(cols), 0, [])
-    return best_pairs
+def id_switches(predictions,ground_truth):
+    return sum(e["switch"] for e in identity_events(predictions,ground_truth))
 
+def fragmentations(predictions,ground_truth):
+    return sum(e["fragment"] for e in identity_events(predictions,ground_truth))
 
-def idf1(predictions: Iterable, ground_truth: Iterable) -> float:
-    idtp, pred_total, gt_total, _, _ = _counts(predictions, ground_truth)
-    denominator = pred_total + gt_total
-    return 2.0 * idtp / denominator if denominator else 1.0
+def unique_count_error(predictions,ground_truth):
+    return evaluate_tracking(predictions,ground_truth)["unique_count_error"]
 
-
-def id_switches(predictions: Iterable, ground_truth: Iterable) -> int:
-    previous = {}
-    switches = 0
-    for pred_frame, gt_frame in zip(_frames(predictions), _frames(ground_truth)):
-        current = {item["gt_id"]: item["track_id"] for item in pred_frame if item.get("gt_id") is not None}
-        for gt_id, track_id in current.items():
-            if gt_id in previous and previous[gt_id] != track_id:
-                switches += 1
-        previous.update(current)
-    return switches
-
-
-def fragmentations(predictions: Iterable, ground_truth: Iterable) -> int:
-    previous_visible = {}
-    fragments = 0
-    for pred_frame, gt_frame in zip(_frames(predictions), _frames(ground_truth)):
-        visible = {item["gt_id"] for item in pred_frame if item.get("gt_id") is not None}
-        gt_ids = {item["gt_id"] for item in gt_frame}
-        for gt_id in gt_ids:
-            if gt_id in previous_visible and not previous_visible[gt_id] and gt_id in visible:
-                fragments += 1
-        for gt_id in gt_ids:
-            previous_visible[gt_id] = gt_id in visible
-    return fragments
-
-
-def unique_count_error(predictions: Iterable, ground_truth: Iterable) -> int:
-    pred_ids = {item["track_id"] for frame in _frames(predictions) for item in frame}
-    gt_ids = {item["gt_id"] for frame in _frames(ground_truth) for item in frame}
-    return len(pred_ids) - len(gt_ids)
-
-
-def evaluate_tracking(predictions, ground_truth) -> dict[str, float | int]:
-    return {"IDF1": idf1(predictions, ground_truth), "IDSW": id_switches(predictions, ground_truth),
-            "fragmentations": fragmentations(predictions, ground_truth),
-            "unique_count_error": unique_count_error(predictions, ground_truth)}
+def detection_map(detections,ground_truth,thresholds=np.arange(.5,.96,.05)):
+    """Single-class AP pooled across frames, 101 recall points and IoU .50:.95."""
+    det,truth=frame_map(detections),frame_map(ground_truth)
+    total=sum(map(len,truth.values()))
+    ranked=sorted(((float(p.get("score",1)),f,p) for f,ps in det.items() for p in ps),
+                  key=lambda x:x[0],reverse=True)
+    aps=[]
+    for threshold in thresholds:
+        used,hits=set(),[]
+        for _,f,p in ranked:
+            candidates=[(overlap(p["bbox"],g["bbox"]),j) for j,g in enumerate(truth.get(f,[])) if (f,j) not in used]
+            score,j=max(candidates,default=(0.,-1))
+            hit=score>=threshold and j>=0
+            hits.append(int(hit))
+            if hit: used.add((f,j))
+        tp=np.cumsum(hits)
+        recall=tp/max(total,1)
+        precision=tp/np.arange(1,len(tp)+1)
+        aps.append(float(np.mean([precision[recall>=r].max(initial=0) for r in np.linspace(0,1,101)])) if total else 0.)
+    return float(np.mean(aps))

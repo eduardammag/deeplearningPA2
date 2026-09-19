@@ -26,10 +26,11 @@ def hungarian_matches(tracks, detections, threshold=0.3):
     import numpy as np
     if not tracks or not detections:
         return [], list(range(len(tracks))), list(range(len(detections)))
-    costs = np.array([[-iou(track.bbox, det.bbox) for det in detections] for track in tracks])
-    rows, cols = linear_sum_assignment(costs)
-    matches = [(int(row), int(col), -float(costs[row, col])) for row, col in zip(rows, cols)
-               if -costs[row, col] >= threshold]
+    scores = np.array([[iou(track.bbox, det.bbox) for det in detections] for track in tracks])
+    weights = np.where(scores >= threshold, min(len(tracks), len(detections)) + 1 + scores, 0)
+    rows, cols = linear_sum_assignment(weights, maximize=True)
+    matches = [(int(row), int(col), float(scores[row, col])) for row, col in zip(rows, cols)
+               if scores[row, col] >= threshold]
     used_t, used_d = {m[0] for m in matches}, {m[1] for m in matches}
     return matches, [i for i in range(len(tracks)) if i not in used_t], [i for i in range(len(detections)) if i not in used_d]
 

@@ -1,77 +1,74 @@
-"""Gerador controlado de videos 128x128 com oclusao por profundidade."""
+﻿"""Deterministic ellipses with a pixel-level depth buffer and controlled full occlusion."""
 from dataclasses import dataclass
 import numpy as np
-from PIL import Image, ImageDraw
+from PIL import Image,ImageDraw
 from .types import Detection
 
 @dataclass(frozen=True)
 class SyntheticConfig:
-    frames: int = 45
-    objects: int = 8
-    typical_speed: float = 2.0
-    occlusion_duration: int = 8
-    width: int = 128
-    height: int = 128
-    seed: int = 0
+    frames:int=45
+    objects:int=8
+    typical_speed:float=2.
+    occlusion_duration:int=8
+    width:int=128
+    height:int=128
+    seed:int=0
+    image_noise:float=2.
+    contrast:float=1.
 
+def generate_video(config):
+    rng=np.random.default_rng(config.seed)
+    cols=int(np.ceil(np.sqrt(config.objects)))
+    centers=np.array([(18+(i%cols)*(config.width-36)/max(cols-1,1),
+                       18+(i//cols)*(config.height-36)/max(cols-1,1)) for i in range(config.objects)])
+    velocity=rng.normal(0,config.typical_speed,(config.objects,2))
+    radii=rng.uniform(4,7,(config.objects,2))
+    depth=list(rng.permutation(config.objects))
+    if config.objects>=2:
+        radii[0]=[4,4]
+        radii[1]=[9,9]
+        depth=[i for i in depth if i not in (0,1)]+[0,1]
+    colors=np.clip(18+config.contrast*(rng.integers(60,230,(config.objects,3))-18),0,255).astype(np.uint8)
+    video,truth=[],[]
+    margin=12
+    extent=np.array([config.width,config.height])-2*margin
+    for f in range(config.frames):
+        raw=centers-margin+velocity*f
+        positions=margin+extent-np.abs(raw%(2*extent)-extent)
+        start=max(1,config.frames//2-config.occlusion_duration//2)
+        if config.objects>=2 and start<=f<start+config.occlusion_duration:
+            positions[1]=positions[0]
+        image=Image.new("RGB",(config.width,config.height),(18,18,24))
+        labels=Image.new("I",image.size,0)
+        boxes={}
+        for identity in depth:
+            x,y=positions[identity]
+            rx,ry=radii[identity]
+            box=(float(x-rx),float(y-ry),float(x+rx),float(y+ry))
+            boxes[identity]=box
+            ImageDraw.Draw(image).ellipse(box,fill=tuple(colors[identity]))
+            ImageDraw.Draw(labels).ellipse(box,fill=int(identity)+1)
+        ids=np.asarray(labels)
+        truth.append([Detection(f,boxes[i],1.,i+1) for i in range(config.objects) if np.any(ids==i+1)])
+        pixels=np.asarray(image).astype(float)+rng.normal(0,config.image_noise,(config.height,config.width,3))
+        video.append(np.clip(pixels,0,255).astype(np.uint8))
+    return np.stack(video),truth
 
-def generate_video(config: SyntheticConfig):
-    rng = np.random.default_rng(config.seed)
-    centers = rng.uniform([12, 12], [config.width - 12, config.height - 12], (config.objects, 2))
-    velocity = rng.normal(0, config.typical_speed, (config.objects, 2))
-    velocity[:, 0] += np.where(np.arange(config.objects) % 2, 0.8, -0.8)
-    radii = rng.uniform(5, 12, (config.objects, 2))
-    depth = rng.permutation(config.objects)
-    colors = rng.integers(40, 230, (config.objects, 3), dtype=np.uint8)
-    video, truth = [], []
-    for frame_index in range(config.frames):
-        image = Image.new("RGB", (config.width, config.height), (18, 18, 24))
-        visible = []
-        positions = centers + velocity * frame_index
-        positions %= np.array([config.width, config.height])
-        if config.objects >= 2 and config.occlusion_duration:
-            start = max(0, config.frames // 2 - config.occlusion_duration // 2)
-            if start <= frame_index < start + config.occlusion_duration:
-                positions[1] = positions[0]
-        # Objects with larger depth are drawn later and hide pixels of lower layers.
-        for object_index in sorted(range(config.objects), key=lambda item: depth[item]):
-            x, y = positions[object_index]
-            rx, ry = radii[object_index]
-            draw = ImageDraw.Draw(image)
-            draw.ellipse((x - rx, y - ry, x + rx, y + ry), fill=tuple(colors[object_index]))
-        pixels = np.asarray(image)
-        for object_index in range(config.objects):
-            x, y = positions[object_index]
-            rx, ry = radii[object_index]
-            box = (float(x - rx), float(y - ry), float(x + rx), float(y + ry))
-            # A center pixel with the object's color is a robust visible/occluded test.
-            center_color = pixels[int(y) % config.height, int(x) % config.width]
-            is_visible = np.linalg.norm(center_color.astype(float) - colors[object_index]) < 2
-            if is_visible:
-                visible.append(Detection(frame_index, box, 1.0, object_index + 1))
-        video.append(pixels)
-        truth.append(visible)
-    return np.asarray(video, dtype=np.uint8), truth
-
-
-def corrupt_detections(truth, drop_probability=0.1, noise_std=1.0, false_positive_rate=0.1,
-                       width=128, height=128, seed=0):
-    """Aplica FN, ruído de caixa e falsos positivos de forma reproduzível."""
-    rng = np.random.default_rng(seed)
-    result = []
-    for frame_index, frame in enumerate(truth):
-        detections = []
-        for item in frame:
-            if rng.random() < drop_probability:
-                continue
-            noisy = np.asarray(item.bbox) + rng.normal(0, noise_std, 4)
-            x1, y1, x2, y2 = noisy
-            clipped = (float(np.clip(x1, 0, width - 1)), float(np.clip(y1, 0, height - 1)),
-                       float(np.clip(x2, 1, width)), float(np.clip(y2, 1, height)))
-            detections.append(Detection(frame_index, clipped, item.score, item.gt_id))
-        false_count = rng.poisson(false_positive_rate * max(1, len(frame)))
-        for _ in range(false_count):
-            x, y = rng.uniform(0, width - 16), rng.uniform(0, height - 16)
-            detections.append(Detection(frame_index, (x, y, x + rng.uniform(5, 18), y + rng.uniform(5, 18)), 0.2))
+def corrupt_detections(truth,drop_probability=.1,noise_std=1.,false_positive_rate=.1,
+                       width=128,height=128,seed=0):
+    rng=np.random.default_rng(seed)
+    result=[]
+    for f,items in enumerate(truth):
+        detections=[]
+        for item in items:
+            if rng.random()<drop_probability: continue
+            x1,y1,x2,y2=np.asarray(item.bbox)+rng.normal(0,noise_std,4)
+            x1,x2=sorted(np.clip([x1,x2],0,width))
+            y1,y2=sorted(np.clip([y1,y2],0,height))
+            if x2<=x1 or y2<=y1: continue
+            detections.append(Detection(f,(float(x1),float(y1),float(x2),float(y2)),item.score))
+        for _ in range(rng.poisson(false_positive_rate*max(1,len(items)))):
+            x,y=rng.uniform(0,width-18),rng.uniform(0,height-18)
+            detections.append(Detection(f,(x,y,x+rng.uniform(5,18),y+rng.uniform(5,18)),.2))
         result.append(detections)
     return result
