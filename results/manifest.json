@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-29T19:00:08.232613+00:00",
+  "generated_at": "2026-09-29T19:09:45.717720+00:00",
   "scope": "Current source/input/artifact snapshot; existing ablation weights were not retrained by evaluation",
   "python": "3.11.9",
   "dependencies": {
@@ -13,7 +13,7 @@
   },
   "device": "cpu",
   "hashes": {
-    "AI_LOG.md": "c908267ba2275739e7a6d340dd044e3b0882fc6b66803caa021d1f9e252d6ed6",
+    "AI_LOG.md": "c1d3807cbc805462bb8d0acc648104d7e0ebf34320ba439904744d316272611c",
     "checkpoints/ablation/gru_T16_s0.pt": "025efaf6b8d606139faa078caf998dfa2a7ab9280b9dc0ad173bff4fca14177f",
     "checkpoints/ablation/gru_T16_s1.pt": "71d44639fa67df409432885075763881d10cee3ef306633adeea1ed00f0857b0",
     "checkpoints/ablation/gru_T16_s2.pt": "f628c81018599b6ef9b85f3085bd5284cd04af22d00e5e7d65f951744635ca0c",
@@ -597,13 +597,13 @@
     "data_MOT17Labels/train/MOT17-13-FRCNN/det/det.txt": "d95a3a26b64a2164d6608ed5cc732fe7f63fc5157c884f218e43cd04507b9989",
     "data_MOT17Labels/train/MOT17-13-FRCNN/gt/gt.txt": "4827603ef87bbd61123cb4c5f194b3bf23531bd78ed9cd916084e53dca998013",
     "data_MOT17Labels/train/MOT17-13-FRCNN/seqinfo.ini": "a7a0f607a31e3f311be6e9836214e23d4642c088db56126f51f150f13fe7a3af",
-    "inferencia.ipynb": "14b17c7c6eddea6e2dbff52470e8ec31559159fd90a0306a547204e4541b25e5",
+    "inferencia.ipynb": "bb258acef9b24b02ea9e84910a3edfd567d6f38b34b814e553815ef34b420a27",
     "metrics.py": "083459b1e2212821eca22d5f3be055ba4337089652bdbaceed0efe2cfa0231a6",
     "outputs/inference.mp4": "a635c8695f3a88a5db0f18f9f070ffe19e20edfc2e16babdc8adb001083b7d88",
     "PA2.pdf": "4e63ca14ede409e5c0992726d4186a7c3cb459db9a4309990a3e092bcf3a7ea7",
-    "PA2_AUDIT.md": "d0748e00f18635c33f8a6f1a8914b0ffbec7ef8cb219e77354900a3ae8677df4",
+    "PA2_AUDIT.md": "d9547792184b368f2a7a1525cf114659f1fab151daa241bf5bb7b000bfe97b5e",
     "pyproject.toml": "a6d08e480d2e635436dd881b05ddfa0942f2f6289e36ceb28aacd93c79467f4b",
-    "README.md": "524653776a2487fd7ebc5ef1f36876e3754440746f42e9d0cb09626275d7d97c",
+    "README.md": "ce5f972981a01513263e7aebe361b786af1fb235697e4f768312ad7186cafeb5",
     "results/ablation.json": "46af9fb41d35abd881c5c17ba306629ccfe84d1770eaac02712ba504aafdfe3a",
     "results/ablation.png": "3b24aad0c82d951869762c79c17ac2b59035b9e560df7c4e62803fe0986d0b5b",
     "results/APRESENTACAO.md": "94b844508641a2d0371ffa849aecfc2d959acbeb8f820ba89e89a2a4cb40b27e",

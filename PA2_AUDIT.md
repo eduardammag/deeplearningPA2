@@ -22,10 +22,12 @@ não houve retreino da ablação. O caso corrigido ilustra um ganho local, enqua
 a correção continua piorando o IDF1 agregado da validação. Isso permanece um
 resultado negativo válido e documentado.
 
-Limite de ambiente: o nbclient não conseguiu iniciar o kernel devido às permissões
-Windows do arquivo de conexão. As células do notebook são verificadas em Python;
-essa execução não certifica o frontend Jupyter. Tampouco certifica a apresentação
-oral ou o entendimento da dupla.
+Atualização de ambiente: o kernel `PA2 (.venv)` foi registrado no Jupyter do
+usuário. Com execução autorizada fora do ambiente restrito, o nbclient executou
+todas as células no kernel real: 525 quadros, 55 identidades e checkpoint
+inalterado. Isso supera a limitação inicial das permissões Windows, mas não
+certifica a reprodução visual no frontend, a apresentação oral ou o entendimento
+da dupla.
 
 ## Registro histórico anterior às correções
 

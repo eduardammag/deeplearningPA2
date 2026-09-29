@@ -97,3 +97,28 @@ células usa execução sequencial em Python, sem desativar a proteção do Jupy
 Todas as células de código foram executadas sobre os 525 quadros, gerando 55
 identidades e preservando o checkpoint. O detector real também foi executado
 sobre uma pasta PNG e sobre um MP4, além dos testes automatizados sem downloads.
+
+### Ajuste do ambiente do notebook
+
+O erro salvo pelo usuário era `ModuleNotFoundError: No module named 'mot_pa2'`.
+O import funciona na `.venv`; o Python global não tem o pacote instalado nem
+OpenCV. Foi adicionada uma célula que localiza a raiz do repositório e inclui
+`src/` no caminho de importação, e os caminhos padrão passaram a ser relativos
+à raiz encontrada. O notebook orienta selecionar o kernel da `.venv`.
+As células de preparação e configuração, incluindo OpenCV e os caminhos de
+dados/checkpoint, foram verificadas na `.venv`. O erro de execução salvo foi limpo.
+
+### Kernel Jupyter registrado e execução validada
+
+Após novo relato, o notebook salvo continha novamente a célula antiga e o erro
+de importação. Foi registrado no Jupyter do usuário o kernel `mot-pa2`, com
+nome visível `PA2 (.venv)`, apontando explicitamente para o Python da `.venv`.
+A preparação dos caminhos foi incorporada à primeira célula de código, e o
+notebook passou a declarar esse kernel nos metadados. O README documenta o
+registro e a seleção do ambiente.
+
+Com a execução autorizada fora do ambiente restrito, o nbclient iniciou o kernel
+registrado e executou todas as células com sucesso: 525 quadros e 55 identidades.
+O SHA-256 do checkpoint permaneceu inalterado. A limitação anterior de testar
+apenas as células em Python foi superada; a reprodução visual no frontend do
+VS Code ainda depende de abrir o arquivo atualizado e selecionar o kernel.

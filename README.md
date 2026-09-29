@@ -12,6 +12,7 @@ Na raiz do repositório, com Python 3.10 ou superior:
 py -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -e ".[full,test]"
+python -m ipykernel install --user --name mot-pa2 --display-name "PA2 (.venv)"
 python -m pytest -q
 ```
 
@@ -233,6 +234,11 @@ não significa melhorar o resultado agregado.
 ## Inferência e apresentação
 
 Abra `inferencia.ipynb` no ambiente instalado e edite `sequence_root`.
+No seletor de kernel do VS Code/Jupyter, escolha **PA2 (.venv)**, registrado
+pelo comando de instalação acima. A primeira célula mostra o executável usado
+e localiza `src/` e os dados a partir da raiz do projeto. Execute as células em
+ordem. Se o notebook já estava aberto durante uma atualização externa, feche a
+aba sem salvar a versão antiga e reabra o arquivo do disco.
 O notebook não usa GT, carrega `checkpoints/gru.pt`, exporta vídeo com cores
 determinísticas por ID e mostra a contagem de objetos únicos. Aceita:
 
