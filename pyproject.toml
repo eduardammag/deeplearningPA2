@@ -16,9 +16,12 @@ test = ["pytest>=7.4"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["."]
+pythonpath = ["src", "."]
 
 [tool.setuptools]
-packages = ["mot_pa2"]
-package-dir = {mot_pa2 = "src"}
+package-dir = {"" = ".", mot_pa2 = "src/mot_pa2"}
 py-modules = ["metrics"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["mot_pa2*"]

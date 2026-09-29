@@ -6,17 +6,20 @@ import torch
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from metrics import evaluate_tracking,detection_map,identity_events,spatial_matches
-from .evaluation import truth_records,detection_records,evaluate_baseline,evaluate_model,save_metrics
-from .mot17 import load_ground_truth,load_public_detections,resolve_sequence,sequence_info,occlusion_durations
-from .training import DATA_ROOT,TRAIN,VALIDATION,TEST,trajectory_chunks,train_model
-from .temporal import load_checkpoint,gradient_horizon,box_to_features
-from .synthetic import SyntheticConfig,generate_video,corrupt_detections
-from .tracking import run_temporal
-from .inference import annotate
+from mot_pa2.evaluation.metrics import evaluate_tracking,detection_map,identity_events,spatial_matches
+from mot_pa2.evaluation.metrics import detection_metrics
+from mot_pa2.evaluation.serialization import save_metrics
+from mot_pa2.evaluation.pipeline import truth_records,detection_records,evaluate_baseline,evaluate_model
+from mot_pa2.data.mot17 import load_ground_truth,load_public_detections,resolve_sequence,sequence_info,occlusion_durations
+from mot_pa2.data.splits import DATA_ROOT,TRAIN,VALIDATION,TEST
+from mot_pa2.training.trainer import trajectory_chunks,train_model
+from mot_pa2.models.temporal import load_checkpoint,gradient_horizon,box_to_features
+from mot_pa2.data.synthetic import SyntheticConfig,generate_video,corrupt_detections
+from mot_pa2.tracking.trackers import run_temporal
+from mot_pa2.visualization.annotations import annotate
+from mot_pa2.training.config import EPOCHS, CHECKPOINT
 
 OUT=Path("outputs")
-EPOCHS=3
 
 def finish(fig,path):
     path=Path(path)
@@ -61,13 +64,14 @@ def baseline_suite(model):
         baseline,_,truth=evaluate_baseline(det,gt)
         temporal,_=evaluate_model(det,gt,model,(info["width"],info["height"]))
         rows.append(dict(sequence=name,density=sum(map(len,gt.values()))/len(gt),
-                         mAP=detection_map(detection_records(det),truth),baseline=baseline,temporal=temporal))
+                         **detection_metrics(detection_records(det),truth),baseline=baseline,temporal=temporal))
         print("Evaluated",name,flush=True)
         save_metrics(rows,OUT/"comparison.json")
     rows.sort(key=lambda x:x["density"])
     fig,axes=plt.subplots(2,1,figsize=(10,7),sharex=True)
     x=np.arange(len(rows))
-    axes[0].plot(x,[r["mAP"] for r in rows],"o-",label="detector mAP .50:.95")
+    axes[0].plot(x,[r["mAP_frame_mean"] for r in rows],"o-",label="detector mAP: mean over frames")
+    axes[0].plot(x,[r["mAP_sequence"] for r in rows],"o--",label="detector mAP: pooled sequence")
     for method in ("baseline","temporal"):
         axes[0].plot(x,[r[method]["IDF1"] for r in rows],"o-",label=method+" IDF1")
     axes[0].legend(); axes[0].set_ylabel("Score")
@@ -79,7 +83,7 @@ def baseline_suite(model):
     return rows
 
 def ablation_cells():
-    from .training import validate_split
+    from mot_pa2.data.splits import validate_split
     validate_split()
     train=trajectory_chunks([resolve_sequence(DATA_ROOT,s) for s in TRAIN])
     validation=trajectory_chunks([resolve_sequence(DATA_ROOT,s) for s in VALIDATION])
@@ -92,9 +96,15 @@ def ablation_cells():
             for seed in (0,1,2):
                 checkpoint=Path(f"checkpoints/ablation/{cell}_T{window}_s{seed}.pt")
                 result_path=OUT/f"ablation/{cell}_T{window}_s{seed}.json"
-                if result_path.exists():
-                    results.append(json.loads(result_path.read_text()))
-                    continue
+                if result_path.exists() and checkpoint.exists():
+                    cached = json.loads(result_path.read_text())
+                    _, saved = load_checkpoint(checkpoint)
+                    if (len(cached.get("history", [])) == EPOCHS
+                            and all(cached.get(k) == saved.get(k) == v
+                                    for k, v in (("cell", cell), ("window", window), ("seed", seed)))
+                            and saved.get("metadata") == dict(train=list(TRAIN), validation=list(VALIDATION), test=list(TEST))):
+                        results.append(cached)
+                        continue
                 model,history=train_model(train,cell=cell,epochs=EPOCHS,window=window,seed=seed,
                     validation=validation,checkpoint=checkpoint,
                     metadata=dict(train=list(TRAIN),validation=list(VALIDATION),test=list(TEST)))
@@ -104,7 +114,7 @@ def ablation_cells():
                 save_metrics(result,result_path)
                 results.append(result)
                 print("Ablation",cell,window,seed,metrics["IDF1"],flush=True)
-    from .reporting import save_ablation
+    from mot_pa2.evaluation.reporting import save_ablation
     save_ablation(results,OUT/"ablation.json")
     fig,ax=plt.subplots()
     for cell in ("rnn","lstm","gru"):
@@ -125,10 +135,11 @@ def stress_detector(model,root):
         temporal,_=evaluate_model(det,gt,model,(info["width"],info["height"]))
         baseline,_,truth=evaluate_baseline(det,gt)
         results.append(dict(level=level,drop=drop,noise=noise,false_positive=fp,
-            mAP=detection_map(detection_records(det),truth),temporal=temporal,baseline=baseline))
+            **detection_metrics(detection_records(det),truth),temporal=temporal,baseline=baseline))
     save_metrics(results,OUT/"stress.json")
     fig,ax=plt.subplots()
-    ax.plot([r["level"] for r in results],[r["mAP"] for r in results],"o-",label="mAP")
+    ax.plot([r["level"] for r in results],[r["mAP_frame_mean"] for r in results],"o-",label="mAP: mean over frames")
+    ax.plot([r["level"] for r in results],[r["mAP_sequence"] for r in results],"o--",label="mAP: pooled sequence")
     for method in ("baseline","temporal"):
         ax.plot([r["level"] for r in results],[r[method]["IDF1"] for r in results],"o-",label=method+" IDF1")
     ax.set(xlabel="Detector corruption intensity",ylabel="Score"); ax.legend()
@@ -152,8 +163,8 @@ def memory_suite(model,root):
     trials=[]
     for index,trajectory in enumerate(data[:24]):
         for gap in (1,2,3,4,8,16,24):
-            from .temporal import features_to_box
-            from .types import Detection
+            from mot_pa2.models.temporal import features_to_box
+            from mot_pa2.core.types import Detection
             det={f:[] if 4<=f<4+gap else [Detection(f,features_to_box(x.tolist(),(info["width"],info["height"])))]
                  for f,x in enumerate(trajectory)}
             pred=run_temporal(det,model,image_size=(info["width"],info["height"]))
@@ -199,9 +210,9 @@ def correction_suite(model):
         ax.set_ylabel(key)
     finish(fig,OUT/"correction.png")
 
-def failure_gallery(model,root):
+def failure_gallery(model,root,bptt_window=16):
     from PIL import Image
-    from .mot17 import sequence_frames
+    from mot_pa2.data.mot17 import sequence_frames
     info=sequence_info(root)
     gt,det=load_ground_truth(root),load_public_detections(root)
     pred,debug=run_temporal(det,model,image_size=(info["width"],info["height"]),return_debug=True)
@@ -210,9 +221,10 @@ def failure_gallery(model,root):
     events=[]
     for event in all_events:
         if event["switch"]:
-            event=dict(event,previous_match_frame=last_match[event["gt_id"]])
+            event=dict(event,previous_match_frame=last_match[event["gt_id"]]["frame"],
+                       previous_track_id=last_match[event["gt_id"]]["track_id"])
             events.append(event)
-        last_match[event["gt_id"]]=event["frame"]
+        last_match[event["gt_id"]]=event
     # Prefer errors whose 4..16-frame gaps can actually test the proposed lifespan correction.
     events.sort(key=lambda e: (not 3 < e["frame"]-e["previous_match_frame"]-1 <= 16,e["frame"]))
     chosen=[]
@@ -245,32 +257,42 @@ def failure_gallery(model,root):
             if objects and objects[0].visibility>=.2: break
             occlusion+=1
         target=next(x for x in gt[f] if x.gt_id==identity)
-        from metrics import overlap
+        from mot_pa2.evaluation.metrics import overlap
         max_iou=max((overlap(target.bbox,b) for b in debug[f].values()),default=0)
         gap=event["frame"]-event["previous_match_frame"]-1
-        analyses.append(dict(**event,preceding_low_visibility_frames=occlusion,
-            best_forecast_iou=max_iou,visible_fraction=target.visibility,
-            bptt_window=16,gradient_decay_factor_at_8=gradient_ratio,
+        old_box = debug[f].get(event["previous_track_id"])
+        analyses.append(dict(**event,sequence=Path(root).name,preceding_low_visibility_frames=occlusion,
+            best_any_track_forecast_iou=max_iou,
+            original_track_forecast_iou=overlap(target.bbox,old_box) if old_box is not None else None,
+            visible_fraction=target.visibility,
+            bptt_window=bptt_window,gradient_decay_factor_at_8=gradient_ratio,
+            gradient_scope="Mean over 16 sequence trajectories, not a causal measurement for this case",
             frames_without_spatial_match=gap,
             diagnosis=("The gap without spatial match exceeds track lifetime; test lifespan 16. GT visibility distinguishes detector misses from full occlusion." if gap>3 else
                        "Identity switched despite short occlusion: inspect overlapping boxes and motion error; longer lifetime alone may not help."),
             figure=f"case_{index}.png"))
     save_metrics(analyses,OUT/"failures/diagnoses.json")
+    return analyses
 
-def main():
+def main(checkpoint=CHECKPOINT):
+    """Evaluate exactly the supplied checkpoint; never train or replace weights."""
+    import hashlib
+    from mot_pa2.experiments.correction import correction_case
     torch.set_num_threads(2)
+    model,metadata=load_checkpoint(checkpoint)
+    fingerprint=hashlib.sha256(Path(checkpoint).read_bytes()).hexdigest()
     synthetic_suite()
-    ablation_cells()
-    # Fixed primary configuration, selected in advance; seed zero is not cherry-picked.
-    import shutil
-    Path("checkpoints").mkdir(exist_ok=True)
-    shutil.copyfile("checkpoints/ablation/gru_T16_s0.pt","checkpoints/gru.pt")
-    model,_=load_checkpoint("checkpoints/gru.pt")
     baseline_suite(model)
     root=resolve_sequence(DATA_ROOT,TEST[0])
     stress_detector(model,root)
     memory_suite(model,root)
     correction_suite(model)
-    failure_gallery(model,root)
+    cases=failure_gallery(model,root,bptt_window=metadata["window"])
+    correction_case(model,root,cases[0],OUT)
+    if hashlib.sha256(Path(checkpoint).read_bytes()).hexdigest()!=fingerprint:
+        raise RuntimeError("Checkpoint changed during evaluation")
+    save_metrics(dict(checkpoint=str(checkpoint),sha256=fingerprint,
+                      cell=metadata["cell"],window=metadata["window"],seed=metadata["seed"]),
+                 OUT/"evaluation.json")
 
 if __name__=="__main__": main()

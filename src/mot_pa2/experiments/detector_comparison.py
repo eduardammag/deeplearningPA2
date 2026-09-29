@@ -3,11 +3,12 @@ from pathlib import Path
 import json
 import numpy as np
 from PIL import Image
-from .mot17 import sequence_frames,sequence_info,load_ground_truth,load_public_detections,resolve_sequence
-from .training import DATA_ROOT,TEST
-from .evaluation import evaluate_baseline,save_metrics,detection_records,truth_records
-from metrics import detection_map
-from .types import Detection
+from mot_pa2.data.mot17 import sequence_frames,sequence_info,load_ground_truth,load_public_detections,resolve_sequence
+from mot_pa2.data.splits import DATA_ROOT,TEST
+from mot_pa2.evaluation.serialization import save_metrics
+from mot_pa2.evaluation.pipeline import evaluate_baseline,detection_records,truth_records
+from mot_pa2.evaluation.metrics import detection_metrics
+from mot_pa2.core.types import Detection
 
 def main():
     import torch
@@ -21,7 +22,7 @@ def main():
         saved=json.loads(cache.read_text())
         detected={int(f):[Detection(int(f),tuple(x["bbox"]),x["score"]) for x in items] for f,items in saved.items()}
     else:
-        from .detectors import torchvision_person_detector
+        from mot_pa2.models.detectors import torchvision_person_detector
         detect=torchvision_person_detector()
         detected={}
         partial=Path("outputs/torchvision_mobilenet_partial.json")
@@ -39,10 +40,11 @@ def main():
     results={}
     for name,det in (("public_FRCNN",load_public_detections(root)),("torchvision_COCO",detected)):
         result,_,truth=evaluate_baseline(det,gt)
-        results[name]=dict(**result,mAP=detection_map(detection_records(det),truth))
+        results[name]=dict(**result,**detection_metrics(detection_records(det),truth))
     save_metrics(dict(sequence=TEST[0],detectors=results,torchvision_min_size=320,
                       torchvision_max_size=640,score_threshold=.5,
                       weights="FasterRCNN_MobileNet_V3_Large_320_FPN_Weights.COCO_V1"), "outputs/detector_comparison.json")
-    print(results,flush=True)
+    print({name: {k: v for k, v in row.items() if k != "mAP_per_frame"}
+           for name, row in results.items()},flush=True)
 
 if __name__=="__main__": main()

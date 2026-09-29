@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 import numpy as np
 from PIL import Image,ImageDraw
-from .types import Detection
+from mot_pa2.core.types import Detection
 
 @dataclass(frozen=True)
 class SyntheticConfig:

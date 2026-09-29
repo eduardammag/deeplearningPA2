@@ -1,6 +1,6 @@
 """Associacao de deteccoes escrita para este projeto."""
-from .geometry import iou
-from .types import Detection, Track
+from mot_pa2.core.geometry import iou
+from mot_pa2.core.types import Detection, Track
 
 
 def greedy_matches(tracks, detections, threshold=0.3):

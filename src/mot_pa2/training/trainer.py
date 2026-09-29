@@ -3,22 +3,12 @@ from pathlib import Path
 import random
 import numpy as np
 import torch
-from .temporal import MotionRNN,box_to_features,train_step
-from .mot17 import load_ground_truth,sequence_info,resolve_sequence
+from mot_pa2.models.temporal import MotionRNN,box_to_features,train_step
+from mot_pa2.data.mot17 import load_ground_truth,sequence_info,resolve_sequence
 
-TRAIN=("MOT17-02","MOT17-04")
-VALIDATION=("MOT17-05",)
-TEST=("MOT17-09","MOT17-10","MOT17-11","MOT17-13")
-DATA_ROOT="data_MOT17Labels"
+from mot_pa2.data.splits import DATA_ROOT, TRAIN, VALIDATION, TEST, validate_split
+from mot_pa2.training.config import EPOCHS, CHECKPOINT
 
-def validate_split(train=TRAIN,validation=VALIDATION,test=TEST):
-    def scene(name):
-        return name.rsplit("-",1)[0] if name.endswith(("-DPM","-FRCNN","-SDP")) else name
-    groups=[{scene(name) for name in split} for split in (train,validation,test)]
-    if any(groups[i]&groups[j] for i in range(3) for j in range(i+1,3)):
-        raise ValueError("A scene cannot occur in more than one split, even with different detectors")
-    if not all(groups):
-        raise ValueError("Train, validation and held-out test sequences are required")
 
 def trajectory_chunks(roots,length=65,stride=32):
     chunks=[]
@@ -47,7 +37,7 @@ def trajectory_chunks(roots,length=65,stride=32):
 def parameter_budget(cell,target=14000):
     return min(range(8,160),key=lambda h:abs(sum(p.numel() for p in MotionRNN(cell,h).parameters())-target))
 
-def train_model(sequences,cell="gru",epochs=5,hidden_size=None,checkpoint="checkpoints/gru.pt",
+def train_model(sequences,cell="gru",epochs=EPOCHS,hidden_size=None,checkpoint=CHECKPOINT,
                 window=16,seed=0,validation=None,metadata=None):
     random.seed(seed)
     np.random.seed(seed)
@@ -77,7 +67,7 @@ def train_model(sequences,cell="gru",epochs=5,hidden_size=None,checkpoint="check
             torch.save(dict(model=model.state_dict(),cell=cell,hidden_size=hidden_size,window=window,
                 seed=seed,history=history.copy(),parameters=sum(p.numel() for p in model.parameters()),
                 metadata=metadata or {}),checkpoint)
-    from .temporal import load_checkpoint
+    from mot_pa2.models.temporal import load_checkpoint
     return load_checkpoint(checkpoint)[0],history
 
 def main():

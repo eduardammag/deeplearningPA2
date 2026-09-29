@@ -1,7 +1,7 @@
 ﻿"""Aggregate independent seeds by recurrent cell AND BPTT window."""
 from pathlib import Path
 import numpy as np
-from .evaluation import save_metrics
+from mot_pa2.evaluation.serialization import save_metrics
 
 def mean_std(records,key):
     values=np.asarray([r[key] for r in records],dtype=float)

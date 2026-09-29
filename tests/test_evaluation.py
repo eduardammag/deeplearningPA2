@@ -1,6 +1,6 @@
-﻿from mot_pa2.evaluation import evaluate_baseline
-from mot_pa2.types import Detection
-from mot_pa2.synthetic import SyntheticConfig,generate_video,corrupt_detections
+﻿from mot_pa2.evaluation.pipeline import evaluate_baseline
+from mot_pa2.core.types import Detection
+from mot_pa2.data.synthetic import SyntheticConfig,generate_video,corrupt_detections
 
 def test_empty_frame_clock():
     box=(10,10,20,20)
@@ -23,7 +23,7 @@ def test_exact_full_occlusion_and_easy_baseline():
 
 def test_detector_variants_cannot_leak_across_splits():
     import pytest
-    from mot_pa2.training import validate_split
+    from mot_pa2.data.splits import validate_split
     validate_split()
     with pytest.raises(ValueError):
         validate_split(("MOT17-02-FRCNN",),("MOT17-02-SDP",),("MOT17-09",))

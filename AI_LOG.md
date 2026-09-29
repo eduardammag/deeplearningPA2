@@ -50,3 +50,50 @@ e complementar este registro com as próprias intervenções e preparação da a
   por uso de variantes diferentes de detector. A suíte completa passou 16 testes.
 - As notas da apresentação distinguem norma do gradiente, estado da LSTM,
   sobrevivência imposta pela política de tracks e erros reais de associação.
+
+## 2026-09-29 — Refatoração, auditoria e correções solicitadas
+
+Ferramenta: assistente de código Codex. O usuário pediu a organização do código
+por responsabilidades, depois a comparação com PA2.pdf e a correção de cinco
+ressalvas encontradas. A auditoria e sua atualização estão em PA2_AUDIT.md.
+
+- O código foi organizado em `src/mot_pa2/`, com subpacotes de dados, modelos,
+  tracking, treino, avaliação, visualização, experimentos e pipelines. Imports,
+  testes, instalação e notebook foram ajustados; a API de métricas na raiz foi
+  preservada por reexportação. A configuração dos splits, as anotações de quadros
+  e a serialização de resultados foram separadas das rotinas que as utilizam.
+- `training/config.py` define três épocas para treino principal e ablação.
+  `experiments.analysis` só avalia o checkpoint recebido, registra seu SHA-256
+  e verifica que ele não mudou. O treino da ablação tem comando próprio;
+  reprodução completa chama treino e ablação explicitamente. O cache exige
+  checkpoint e metadados compatíveis, além do JSON.
+- A correção fixa de vida máxima 3→16 ganhou uma comparação do mesmo objeto,
+  na mesma sequência e nos mesmos quadros do primeiro caso da galeria. O JSON
+  acompanha o ID original, a associação ao GT, as ausências e a IoU. A figura
+  destaca a região do objeto. Essa análise do teste é declarada pós-hoc; não
+  altera o modelo principal nem substitui o resultado agregado na validação.
+- `data/video.py` e a inferência aceitam MOT, imagens e vídeos em streaming.
+  O detector público é inferido do sufixo DPM/FRCNN/SDP; a fonte automática usa
+  torchvision quando faltam detecções públicas. O notebook expõe detector e FPS,
+  e seus textos com acentos corrompidos foram corrigidos.
+- As tabelas, gráficos e JSONs distinguem `mAP_frame_mean` de `mAP_sequence`.
+  O AP individual fica em `mAP_per_frame`; quadros sem GT recebem AP=0 e entram
+  na média por quadro. A chave antiga `mAP` mantém a agregação por sequência.
+- O manifesto passa a cobrir recursivamente código, testes, documentação,
+  entradas, checkpoints e artefatos, sem incluir o próprio hash. Descreve o
+  snapshot atual, sem atribuir os treinos históricos ao código refatorado.
+
+Verificações: 25 testes automatizados passaram. Foram executadas a avaliação
+das quatro sequências reservadas, a memória, o estresse, a galeria, a correção
+agregada e a correção no mesmo caso. A comparação dos dois detectores foi
+recalculada usando o cache existente de 525 quadros. Os pesos principais foram
+preservados; as 36 configurações de ablação não foram retreinadas nesta revisão.
+No caso 1, o ID original é mantido no quadro 173 com vida máxima 16; isso não
+elimina a piora agregada de IDF1 na validação, associada ao aumento de IDFP.
+
+A abertura automática de um kernel Jupyter pelo nbclient encontrou uma restrição
+de permissões do Windows ao configurar o arquivo de conexão. A validação das
+células usa execução sequencial em Python, sem desativar a proteção do Jupyter.
+Todas as células de código foram executadas sobre os 525 quadros, gerando 55
+identidades e preservando o checkpoint. O detector real também foi executado
+sobre uma pasta PNG e sobre um MP4, além dos testes automatizados sem downloads.

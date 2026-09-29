@@ -1,13 +1,13 @@
 # Resultados para a apresentação
 
-Valores executados; configuração principal GRU/T=16/seed=0, sem escolha pelo teste.
+Checkpoint avaliado: checkpoints/gru.pt; GRU/T=16/seed=0. SHA-256: 025efaf6b8d606139faa078caf998dfa2a7ab9280b9dc0ad173bff4fca14177f.
 
-| Sequência | Baseline IDF1 | Temporal IDF1 | mAP |
-|---|---:|---:|---:|
-| MOT17-09 | 0.5049 | 0.5047 | 0.4754 |
-| MOT17-10 | 0.3741 | 0.3770 | 0.3826 |
-| MOT17-11 | 0.5373 | 0.5395 | 0.5026 |
-| MOT17-13 | 0.3534 | 0.3568 | 0.3917 |
+| Sequência | Baseline IDF1 | Temporal IDF1 | mAP médio por quadro | mAP agregado |
+|---|---:|---:|---:|---:|
+| MOT17-09 | 0.5049 | 0.5047 | 0.4972 | 0.4754 |
+| MOT17-10 | 0.3741 | 0.3770 | 0.4078 | 0.3826 |
+| MOT17-11 | 0.5373 | 0.5395 | 0.5257 | 0.5026 |
+| MOT17-13 | 0.3534 | 0.3568 | 0.4559 | 0.3917 |
 
 ## Ablação na validação
 
@@ -40,20 +40,36 @@ A ablação não mostrou uma quebra clara da RNN em IDF1 ao aumentar T. O gradie
 
 ## Estresse sem retreino
 
-| Intensidade | mAP | Baseline IDF1 | Temporal IDF1 |
-|---|---:|---:|---:|
-| 1 | 0.4212 | 0.4426 | 0.4425 |
-| 2 | 0.3483 | 0.3605 | 0.3607 |
-| 3 | 0.2102 | 0.1695 | 0.1695 |
+| Intensidade | mAP médio por quadro | mAP agregado | Baseline IDF1 | Temporal IDF1 |
+|---|---:|---:|---:|---:|
+| 1 | 0.4438 | 0.4212 | 0.4426 | 0.4425 |
+| 2 | 0.3685 | 0.3483 | 0.3605 | 0.3607 |
+| 3 | 0.2256 | 0.2102 | 0.1695 | 0.1695 |
 
 As diferenças entre temporal e baseline são pequenas neste experimento: não há evidência de absorção relevante da degradação do detector. A perda de detecções e o ruído fragmentam ambas as soluções.
 
 ## Duas fontes de detecção, sequência 09 inteira
 
-| Fonte | mAP | IDF1 | ID switches |
-|---|---:|---:|---:|
-| public_FRCNN | 0.4754 | 0.5049 | 38 |
-| torchvision_COCO | 0.2657 | 0.3192 | 220 |
+| Fonte | mAP médio por quadro | mAP agregado | IDF1 | ID switches |
+|---|---:|---:|---:|---:|
+| public_FRCNN | 0.4972 | 0.4754 | 0.5049 | 38 |
+| torchvision_COCO | 0.2887 | 0.2657 | 0.3192 | 220 |
+
+## Correção no mesmo caso da galeria
+
+Sequência MOT17-09-FRCNN, GT 1, quadro 173; ver correction_case.png e correction_case.json.
+Ilustração pós-hoc da mudança fixa 3→16; não seleciona uma nova configuração no teste.
+
+| Vida máxima | ID original | Mesmo ID no evento |
+|---|---:|---|
+| 3 | 7 | False |
+| 16 | 7 | True |
+
+The original ID is recovered at the selected event after extending track lifetime.
+
+O ganho ou fracasso neste caso não substitui a avaliação agregada na validação. Na sequência 05, prolongar a vida aumentou IDFP de 1353 para 2985; sobreviver mais tempo também mantém caixas falsas.
+
+mAP médio por quadro usa média aritmética com peso igual por quadro; mAP agregado ordena as detecções da sequência inteira. Quadros sem GT têm AP=0.
 
 ## Interpretação
 

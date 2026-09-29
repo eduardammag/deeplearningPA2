@@ -1,0 +1,7 @@
+{
+  "checkpoint": "checkpoints/gru.pt",
+  "sha256": "025efaf6b8d606139faa078caf998dfa2a7ab9280b9dc0ad173bff4fca14177f",
+  "cell": "gru",
+  "window": 16,
+  "seed": 0
+}

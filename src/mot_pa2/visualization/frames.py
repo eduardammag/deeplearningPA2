@@ -1,7 +1,7 @@
 """Visualizacao de IDs e galerias de falhas."""
 from pathlib import Path
 import matplotlib.pyplot as plt
-from .types import Detection
+from mot_pa2.core.types import Detection
 
 
 def draw_frame(image, objects, output=None, title=""):

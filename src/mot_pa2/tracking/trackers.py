@@ -1,7 +1,7 @@
 ﻿"""Own association and persistent recurrent state with an explicit frame clock."""
 import torch
-from .association import IoUTracker
-from .temporal import box_to_features,features_to_box
+from mot_pa2.tracking.association import IoUTracker
+from mot_pa2.models.temporal import box_to_features,features_to_box
 
 def records(tracks):
     return [dict(track_id=t.track_id,bbox=t.bbox,missed=t.missed) for t in tracks]

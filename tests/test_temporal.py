@@ -1,8 +1,8 @@
 ﻿"""Core temporal regressions, including persistent state and hidden-state gradients."""
 import torch
-from mot_pa2.temporal import MotionRNN,train_step,gradient_horizon
-from mot_pa2.tracking import TemporalTracker
-from mot_pa2.types import Detection
+from mot_pa2.models.temporal import MotionRNN,train_step,gradient_horizon
+from mot_pa2.tracking.trackers import TemporalTracker
+from mot_pa2.core.types import Detection
 
 def test_all_recurrent_cells_have_box_output():
     sequence=torch.randn(2,8,4)

@@ -1,6 +1,6 @@
-from mot_pa2.association import IoUTracker
-from mot_pa2.geometry import iou, nms
-from mot_pa2.synthetic import SyntheticConfig, generate_video, corrupt_detections
+from mot_pa2.tracking.association import IoUTracker
+from mot_pa2.core.geometry import iou, nms
+from mot_pa2.data.synthetic import SyntheticConfig, generate_video, corrupt_detections
 
 
 def test_synthetic_has_real_occlusion():

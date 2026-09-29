@@ -1,0 +1,168 @@
+{
+  "sequence": "MOT17-09-FRCNN",
+  "gallery_figure": "case_1.png",
+  "gt_id": 1,
+  "event_frame": 173,
+  "previous_match_frame": 166,
+  "protocol": "Post-hoc illustration of fixed lifespan 3->16 on the first gallery case; not model selection or a new held-out benchmark",
+  "diagnosis": "The gap without spatial match exceeds track lifetime; test lifespan 16. GT visibility distinguishes detector misses from full occlusion.",
+  "variants": [
+    {
+      "max_missed": 3,
+      "same_id_at_event": false,
+      "original_track_id": 7,
+      "trace": [
+        {
+          "frame": 166,
+          "matched_track_id": 7,
+          "original_track_alive": true,
+          "missed": 3,
+          "original_track_iou": 0.8043092642010072
+        },
+        {
+          "frame": 167,
+          "matched_track_id": null,
+          "original_track_alive": false,
+          "missed": null,
+          "original_track_iou": null
+        },
+        {
+          "frame": 168,
+          "matched_track_id": null,
+          "original_track_alive": false,
+          "missed": null,
+          "original_track_iou": null
+        },
+        {
+          "frame": 169,
+          "matched_track_id": null,
+          "original_track_alive": false,
+          "missed": null,
+          "original_track_iou": null
+        },
+        {
+          "frame": 170,
+          "matched_track_id": null,
+          "original_track_alive": false,
+          "missed": null,
+          "original_track_iou": null
+        },
+        {
+          "frame": 171,
+          "matched_track_id": null,
+          "original_track_alive": false,
+          "missed": null,
+          "original_track_iou": null
+        },
+        {
+          "frame": 172,
+          "matched_track_id": null,
+          "original_track_alive": false,
+          "missed": null,
+          "original_track_iou": null
+        },
+        {
+          "frame": 173,
+          "matched_track_id": 12,
+          "original_track_alive": false,
+          "missed": null,
+          "original_track_iou": null
+        },
+        {
+          "frame": 174,
+          "matched_track_id": null,
+          "original_track_alive": false,
+          "missed": null,
+          "original_track_iou": null
+        },
+        {
+          "frame": 175,
+          "matched_track_id": null,
+          "original_track_alive": false,
+          "missed": null,
+          "original_track_iou": null
+        }
+      ]
+    },
+    {
+      "max_missed": 16,
+      "same_id_at_event": true,
+      "original_track_id": 7,
+      "trace": [
+        {
+          "frame": 166,
+          "matched_track_id": 7,
+          "original_track_alive": true,
+          "missed": 3,
+          "original_track_iou": 0.8043092642010072
+        },
+        {
+          "frame": 167,
+          "matched_track_id": 7,
+          "original_track_alive": true,
+          "missed": 4,
+          "original_track_iou": 0.8017603603459363
+        },
+        {
+          "frame": 168,
+          "matched_track_id": 7,
+          "original_track_alive": true,
+          "missed": 5,
+          "original_track_iou": 0.8038559274487397
+        },
+        {
+          "frame": 169,
+          "matched_track_id": 7,
+          "original_track_alive": true,
+          "missed": 6,
+          "original_track_iou": 0.801296442316509
+        },
+        {
+          "frame": 170,
+          "matched_track_id": 7,
+          "original_track_alive": true,
+          "missed": 7,
+          "original_track_iou": 0.8033686250325199
+        },
+        {
+          "frame": 171,
+          "matched_track_id": 7,
+          "original_track_alive": true,
+          "missed": 8,
+          "original_track_iou": 0.8008020595312206
+        },
+        {
+          "frame": 172,
+          "matched_track_id": 7,
+          "original_track_alive": true,
+          "missed": 9,
+          "original_track_iou": 0.8028540824978392
+        },
+        {
+          "frame": 173,
+          "matched_track_id": 7,
+          "original_track_alive": true,
+          "missed": 10,
+          "original_track_iou": 0.8002833308301998
+        },
+        {
+          "frame": 174,
+          "matched_track_id": 7,
+          "original_track_alive": true,
+          "missed": 11,
+          "original_track_iou": 0.7997475171311106
+        },
+        {
+          "frame": 175,
+          "matched_track_id": 7,
+          "original_track_alive": true,
+          "missed": 12,
+          "original_track_iou": 0.7907452358752478
+        }
+      ]
+    }
+  ],
+  "conclusion": "The original ID is recovered at the selected event after extending track lifetime.",
+  "validation_result": "correction.json",
+  "figure": "correction_case.png"
+}

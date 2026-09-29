@@ -2,8 +2,8 @@
 from pathlib import Path
 import csv
 import configparser
-from .geometry import xywh_to_xyxy,nms
-from .types import Detection
+from mot_pa2.core.geometry import xywh_to_xyxy,nms
+from mot_pa2.core.types import Detection
 
 def read_mot_file(path):
     with Path(path).open(newline="") as stream:
@@ -30,8 +30,12 @@ def load_ground_truth(sequence_root,visible_threshold=0.):
         frames[int(frame)].append(Detection(int(frame),xywh_to_xyxy((x,y,width,height)),confidence,int(identity),visibility))
     return frames
 
-def load_public_detections(sequence_root,detector="FRCNN",min_score=0.,nms_threshold=.7):
+def load_public_detections(sequence_root,detector=None,min_score=0.,nms_threshold=.7):
     root=Path(sequence_root)
+    inferred = next((name for name in ("DPM", "FRCNN", "SDP") if root.name.endswith("-" + name)), None)
+    detector = detector or inferred or "FRCNN"
+    if detector not in ("DPM", "FRCNN", "SDP"):
+        raise ValueError(f"Unknown public detector: {detector}")
     if root.name.endswith(("-DPM","-FRCNN","-SDP")) and not root.name.endswith("-"+detector):
         raise ValueError("Detector does not match the sequence directory")
     info=sequence_info(root)

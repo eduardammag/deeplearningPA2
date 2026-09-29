@@ -1,8 +1,6 @@
 ﻿"""Evaluation on a common frame clock."""
-import json
-from pathlib import Path
-from metrics import evaluate_tracking,detection_map
-from .tracking import run_baseline,run_temporal
+from mot_pa2.evaluation.metrics import evaluate_tracking,detection_map
+from mot_pa2.tracking.trackers import run_baseline,run_temporal
 
 def truth_records(gt):
     return {f:[dict(gt_id=x.gt_id,bbox=x.bbox) for x in items] for f,items in gt.items()}
@@ -23,6 +21,3 @@ def evaluate_model(detections,gt,model,image_size,max_missed=3):
                              image_size=image_size,max_missed=max_missed)
     return evaluate_tracking(predictions,truth_records(gt)),predictions
 
-def save_metrics(metrics,path):
-    Path(path).parent.mkdir(parents=True,exist_ok=True)
-    Path(path).write_text(json.dumps(metrics,indent=2),encoding="utf-8")

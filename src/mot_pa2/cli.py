@@ -1,5 +1,5 @@
 ﻿"""Quick synthetic run; parameters stay in Python as requested."""
-from .analysis import synthetic_suite
+from mot_pa2.experiments.analysis import synthetic_suite
 
 def main():
     synthetic_suite()

@@ -1,4 +1,4 @@
-﻿from metrics import evaluate_tracking,idf1,id_switches,detection_map
+﻿from mot_pa2.evaluation.metrics import evaluate_tracking,idf1,id_switches,detection_map
 
 def record(track_id,gt_id):
     return dict(track_id=track_id,gt_id=gt_id,bbox=(gt_id*20,0,gt_id*20+10,10))
